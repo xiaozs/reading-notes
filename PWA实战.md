@@ -14,12 +14,15 @@ Service Worker:
 代码：
 ```html
 <script>
-    //注册，注册文件为sw.js
-    navigator.serviceWorker.register("/sw.js").then(() => {
-        //注册成功
-    }).catch(() => {
-        //注册失败
-    })
+    //属性探测，是否支持serviceWorker
+    if("serviceWorker" in navigator) {
+        //注册，注册文件为sw.js
+        navigator.serviceWorker.register("/sw.js").then(() => {
+            //注册成功
+        }).catch(() => {
+            //注册失败
+        })
+    }
 </script>
 ```
 ```javascript
@@ -32,5 +35,78 @@ self.addEventListener("fetch",(event) => {
 
     //请求拦截并调包
     event.respondWidth(fetch("替换物的url"))
+})
+```
+
+# 第2章 构建PWA的第一步
+
+```
+简单介绍了一些PWA相关的知识，
+例如：
+缓存
+自定义错误页面
+manifest设置应用信息
+
+都只是简单介绍，应该接下来会有展开
+```
+
+# 第3章 缓存
+```js
+//sw.js
+
+//install事件，在sw.js第一次注册的时候触发
+self.addEventListener("install", event => {
+    event.waitUntil(                            //这个方法以一个promise为参数,用来探测是否安装成功的
+                                                //（这个api究竟是谁设计的，直接回调要求返回一个promise不好么）
+        caches.open(cacheName)                  //打开一个特定名称的缓存，这个方法返回一个promise
+            .then(cache => cache.addAll([       //添加缓存
+                "/js/script.js",
+                "/images/hello.png"
+            ]))
+    )
+})
+
+//HTTP请求事件
+self.addEventListener("fetch", event => {
+    event.respondWidth(
+        caches.match(event.request)         //在缓存中通过url查找匹配(这里又不用cacheName，搞不懂)
+            .then(response => {
+                if(response){
+                    return response;        //缓存命中，返回缓存内容
+                } 
+                return fetch(event.request) //往常一样获取资源
+            })
+    )
+})
+```
+```js
+
+//改进：请求并缓存
+self.addEventListener("fetch", event => {
+    event.respondWidth(
+        caches.match(event.request, { ignoreSearch: true })             //忽略url的查询参数 
+            .then(response => {
+                if(response){
+                    return response; 
+                } 
+                //以上一样
+
+                var requestToCache = event.request.clone();             //复制请求，请求是一个流只能使用一次
+
+                return fetch(requestToCache).then(response => {     
+                    if(!response || response.status !== 200) {      
+                        return response;                                //返回错误信息
+                    }
+
+                    var responseToCache = response.clone();
+                    caches.open(cacheName)
+                        .then(cache => {
+                            cache.put(requestToCache, responseToCache)  //添加缓存
+                        })
+
+                    return response;
+                })
+            })
+    )
 })
 ```
