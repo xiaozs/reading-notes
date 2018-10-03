@@ -96,3 +96,25 @@ Joi是一个验证库，
 * 存在类型转换，numberic字符串转数字，buffer转string。有开关设置进不进行转换。
 * abortEarly开关，是否遇到第一个错误就停止验证。
 
+
+## 第7章 使用插件构建模块化应用
+
+```
+插件其实就是一个函数，
+第一个参数是server，也就是说可以用上所有的server的方法。
+
+推荐把所有逻辑都写在插件里面？
+这个问题要怎么解决呢？
+1. 插件冲突
+2. 插件依赖
+```
+
+```
+插件间通讯：
+
+server.expose("methodName", () => { return val; }) 在插件内注册一个函数，
+server.plugins["plugins-name"].methodName() 来调用
+
+server.decorate("server", "propName", obj);
+server.propName //obj;
+```
