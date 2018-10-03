@@ -110,3 +110,24 @@ self.addEventListener("fetch", event => {
     )
 })
 ```
+
+```
+Service Worker文件会在每次访问网站时在后台对比自身，如果不同，会重新执行器生命周期
+其他文件 建议使用缓存破坏(文件名加hash)
+
+ignoreSearch    //忽略请求参数
+ignoreMethod    //忽略请求方法
+ignoreVary      //忽略vary响应头
+```
+
+
+```
+用importScripts方法加载库。
+
+workbox提供的一些缓存策略:
+```
+* 缓存优先
+* 只通过缓存获取
+* 网络优先
+* 只通过网络获取
+* 从缓存或网络中找到最快的响应
