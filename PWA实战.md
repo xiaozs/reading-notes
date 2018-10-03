@@ -58,6 +58,7 @@ manifest设置应用信息
 self.addEventListener("install", event => {
     event.waitUntil(                            //这个方法以一个promise为参数,用来探测是否安装成功的
                                                 //（这个api究竟是谁设计的，直接回调要求返回一个promise不好么）
+                                                //（可能和skipWaiting这些api有关系）
         caches.open(cacheName)                  //打开一个特定名称的缓存，这个方法返回一个promise
             .then(cache => cache.addAll([       //添加缓存
                 "/js/script.js",
@@ -131,3 +132,83 @@ workbox提供的一些缓存策略:
 * 网络优先
 * 只通过网络获取
 * 从缓存或网络中找到最快的响应
+
+## 第4章 拦截网络请求
+```
+介绍了一波fetch的api，其中的Respone可以自定义HTTP响应
+```
+
+```javascript
+//如前述，service worker在注册后第一次刷新或跳转其他页面的时候才起作用，
+//以下是马上起效的方法：
+self.addEventListener("install", (event) => {
+    event.waitUntil(self.skipWaiting()); //触发activate事件
+})
+//还可以与self.clients.claim一起用，确保底层service worker立即生效
+self.addEventListener("activate", (event) => {
+    event.waitUntil(self.clients.claim());
+})
+```
+
+## 第5章 观感
+
+```json
+//manifest.json
+{
+    "name": "提示用户安装时的文本",
+    "short_name": "安装后的文本",
+    "start_url": "打开应用的第一个页面url", //可以在上面加上查询字符串，以追踪访问来源
+    "display": "fullscreen",    //全屏
+    "display": "standalone",    //没url栏，有状态栏
+    "display": "minimal-ui",    //最小UI元素集合（后退、前进、重载按钮等）
+    "display": "browser",       //浏览器方式打开
+    "theme_color": "地址栏颜色",
+    "background_color": "背景色",
+    "icons": [{
+        "src": "应用图标",
+        "sizes": "192x192",     //图标大小
+        "type": "image/png"
+    }]
+}
+```
+```html
+<!--引入方式-->
+<link rel="manifest" href="/manifest.json" />
+```
+```javascript
+//阻止安装弹框
+window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    return false;
+})
+```
+
+
+```javascript
+//判断用户选择
+window.addEventListener("beforeinstallprompt", (e) => {
+    event.userChoice.then((result) => {
+        result.outcome === "dismissed"
+    })
+})
+```
+
+
+```javascript
+//推迟提示
+var savedPrompt;
+window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    savedPrompt = e;
+    return false;
+})
+
+btn.addEventListener("click", () => {
+    if(savedPrompt) {
+        savedPrompt.prompt();   //弹出提示
+    }
+})
+
+```
+
+## 第6章 推送通知
