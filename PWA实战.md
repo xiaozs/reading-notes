@@ -212,3 +212,154 @@ btn.addEventListener("click", () => {
 ```
 
 ## 第6章 推送通知
+```javascript
+//前端
+var key;
+var authSecret;
+var endpoint;
+var vapidPublicKey = "" //公钥，前后都要
+
+//将VAPID密钥从base64字符串转换成Uint8数组，因为这是VAPID规范要求的
+function urlBase64ToUint8Array(base64String){
+    const padding = "=".repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/\-/g, "+")
+        .replace(/_/g, "/")
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for(let i = 0; i < rawData.length; i++){
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
+
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").then(registration => {
+        return registration.pushManager.getSubscription();
+            .then(subscription => {
+                if(subscription) {
+                    //如果已经订阅
+                    return;
+                }
+                return registration.pushManager.subscribe({ //这里弹出订阅选择框
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
+                }).then(subscription => {
+                    //从订阅对象中获取密钥和authSecret
+                    var rawKey = subscription.getKey ? subscription.getKey("p256dh") : "";
+                    key = rawKey ? btoa(String.fromCharCode.apply(null, new Uint8Array(rawKey))) : "";
+                    var rawAuthSecret = subscription.getKey ? subscription.getKey ? subscription.getKey("auth") : ""; 
+                    authSecret = rawAuthSecret ? btoa(String.fromCharCode.apply(null, new Uint8Array(rawAuthSecret))) : "";
+
+                    endpoint = subscription.endpoint;
+
+                    //注册推送
+                    return fetch("./register", {
+                        method: "post",
+                        headers: new Headers({
+                            "content-type": "application/json"
+                        }),
+                        body: JSON.stringify({
+                            endpoint: subscription.endpoint,
+                            key: key,
+                            authSecret: authSecret
+                        })
+                    })
+                })
+            })
+    }).catch(err => {
+        //注册失败
+    })
+}
+```
+
+```javascript
+//后端
+//vapid是一个协议，用于应用服务器和推送服务之间的握手
+const webpush = require("web-push");
+
+webpush.setVapidDetails(xxx,xxx,xxx);//设置vapid详情
+
+//订阅用户相关的信息
+const pushSubscription = {
+    endpoint,
+    keys:{
+        auth: authSecret,
+        p256dh: key
+    }
+}
+
+webpush.sedNotification(pushSubscription,
+    JSON.stringify({    //貌似第2个参数才是真正推送内容，是个字符串
+        msg: "推送内容",
+        url: "发送消息的服务器url",
+        icon: iconUrl
+    })
+)
+
+```
+
+```javascript
+//前端
+//接收通知
+self.addEventListener("push", event => {
+    var payload = event.data ? JSON.parse(event.data.text()) : "no payload";
+    event.waitUntil(
+        self.refistration.showNotification(title, { //弹出通知
+            body: payload.msg,
+            url: payload.url,
+            icon: payload.icon,
+
+            actions: [  //出现在通知中的操作
+                { action: "voteup", title: "Vote up" },
+                { action: "votedown", title: "Vote Down" }
+            ],
+            vibrate: [300, 100, 400]    //震动300ms，暂停100ms，震动400ms
+        })
+    )
+})
+//互动（跳转通知）
+self.addEventListener("notificationclick", event => {
+    event.notification.close();     //关闭通知
+
+    event.waitUntil(
+        //检查当前窗口是否已经打开
+        clients.matchAll({
+            type: "window"
+        }).then(clientList => {
+            for(var i = 0; i < clientList.length; i++) {
+                var client = clientList[i];
+                if (client.url == "/" && "focus" in client) {
+                    return client.focus();
+                }
+            }
+            if (clients.openWindow) {
+                return clients.openWindow("页面url")
+            }
+        })
+    )
+})
+// 带操作的
+self.addEventListener("notificationclick", event => {
+    event.notification.close();     //关闭通知
+    
+    if(event.action === "voteup") {
+        clients.openWindow("voteup页面url")
+    } else {
+        clients.openWindow("votedown页面url")
+    }
+})
+```
+
+```javascript
+//取消订阅
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.ready.then(registration => {
+        registration.pushManager.getSubscription().then(subscription => {
+            if(!subscription) return;
+            subscription.unsubscribe();
+        })
+    })
+}
+```
