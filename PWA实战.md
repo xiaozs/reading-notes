@@ -407,3 +407,44 @@ self.addEventListener("fetch", event => {
     event.respondWith(Promise.race([timeout(3000), fetch(event.request.url)]));
 })
 ```
+
+## 第9章 保持数据同步
+
+```javascript
+navigator.servieWorker.register("sw.js")
+    .then(registration => navigator.serviceWorker.ready)    //ready是一个promise, 这里相当于await ready
+    .then(registration => {
+        btn.onClick(() => {
+            registration.sync.register("contact-email").then(() => {    //注册同步
+                //保存数据
+            })
+        })
+    })
+
+// sw.js
+self.addEventListenr("sync", event => {
+    if(event.tag === "contact-email"){
+        event.waitUntil(
+            //获取保存的数据
+            //发送数据给后台
+            //删除保存的内容
+        )
+    }
+})
+```
+
+```javascript
+//定期同步，不稳定的api
+navigator.serviceWorker.ready.then(registration => {
+    registration.periodicSync.register({
+        tag: "同步事件名称",                 // 要保持唯一
+        minPeriod: 12 * 60 * 60 * 1000,     // 两次成功同步的最小间隔
+        powerState: "电池相关设置",          // 有"auto", "avoid-draining"两种
+        networkState: "同步的网络需求"       // 有"online", "avoid-cellular", "any"
+    }).then(periodicSyncreg => {
+
+    })
+})
+```
+
+## 第10章 流式数据
