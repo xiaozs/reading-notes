@@ -393,3 +393,17 @@ self.addEventListener("fetch", event => {
 window.addEventListener("online",() => {});
 window.addEventListener("offline",() => {});
 ```
+
+## 第8章 构建更富弹性的应用
+
+* lie-fi：不是离线但是下载速度极慢的情况。
+* 单点故障（SPOF）：部分第三方脚本引起的阻塞，导致页面空白。（可用WebPageTest测试）
+
+
+```javascript
+// 其实就是给请求设置超时
+// 一旦超时就用缓存替代
+self.addEventListener("fetch", event => {
+    event.respondWith(Promise.race([timeout(3000), fetch(event.request.url)]));
+})
+```
