@@ -363,3 +363,33 @@ if ("serviceWorker" in navigator) {
     })
 }
 ```
+
+## 第7章 离线浏览
+
+```javascript
+//网络优先的一个例子，其他的模式在第3章有述
+self.addEventListener("fetch", event => {
+    let url = event.request.url;
+    event.respondWith(
+        fetch(url).then(response => {
+            if(!response || response.status !== 200){
+                return response;
+            }
+
+            var responseToCache = response.clone();
+            caches.open(cacheName).then(cache => {
+                cache.put(event.request, responseToCache);
+            })
+            return response;
+        }).catch(error => {     //若果fetch失败，则捕获此错误
+            return caches.match(url);   //返回缓存内容
+        })
+    )
+})
+```
+
+```javascript
+//上线、离线的两个事件
+window.addEventListener("online",() => {});
+window.addEventListener("offline",() => {});
+```
