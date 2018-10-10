@@ -448,3 +448,65 @@ navigator.serviceWorker.ready.then(registration => {
 ```
 
 ## 第10章 流式数据
+```
+流的优势：
+```
+* 知道开始和结束
+* 缓冲
+* 通过管道连接
+* 内置错误处理
+* 可取消
+
+
+可读流 = 推送源（可暂停、恢复数据流）+ 拉取源
+
+```javascript
+var stream = new ReadableStream({
+    start(controller) {},   //会被立即调用并用来设置基础数据源（推送源|拉取源）
+    pull(controller) {},    //会重复调用，直到缓冲区占满
+    cancel(reason) {}       //消费者取消基础数据源
+}, queuingStrategy)         //流的内部队列过载的处理策略
+```
+
+```
+//流的说明代码，玩具代码
+self.addEventListener("fetch", event => {
+    event.respondWith(htmlStream());
+})
+
+function htmlStream(){
+    const html = "html goes here ....";
+    const stream = new ReadableStream({
+        start: controller => {
+            const encoder = new TextEncoder();
+            let pos = 0;
+            let chunkSize = 1;
+
+            function push(){
+                if (pos >= html.length){
+                    controller.close();   //如果html被全扔进stream里面就关闭controller
+                    return;
+                }
+
+                //将一个html chunk放进队列
+                controller.enqueue(
+                    encoder.encode(html.slice(pos, pos + chunkSize))
+                )
+
+                //更新索引
+                pos += chunkSize;
+                //循环
+                setTimeout(push, 50);
+            }
+            
+            push();
+        }
+    });
+
+    return new Response(stream, {
+        headers: {
+            "Content-Type": "text/html"
+        }
+    })
+}
+```
