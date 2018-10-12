@@ -7,3 +7,28 @@
 
 还有两者的hello world应用
 ```
+
+## 第2章 为你的首款桌面应用搭建开发环境
+
+```
+又复习了一边hello world，nw的很简单，
+electron的姑且列一下：
+```
+
+```javascript
+const electron = require("electron");
+const app = electron.app;
+const BrowserWindow = electron.BrowserWindow;
+
+let mainWindow = null;
+app.on("window-all-closed",() => {
+    if(process.platform !== "darwin") app.quit();   //如果不是苹果电脑，就退出应用
+})
+app.on("ready", () => {
+    mainWindow = new BrowserWindow();
+    mainWindow.loadURL("file://${app.getAppPatch()/index.html}")
+    mainWindow.on("closed", () => {
+        mainWindow = null;
+    })
+})
+```
