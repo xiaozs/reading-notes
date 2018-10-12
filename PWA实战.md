@@ -510,3 +510,102 @@ function htmlStream(){
     })
 }
 ```
+
+## 第11章 PWA故障排除
+
+```
+这一部分有相当的都在前面已经有提过了，只挑一些特别的
+```
+* 可在Service Worker更新后的activate事件中清除代码缓存
+* PWA存储使用情况：
+
+```javascript
+navigator.storage.estimate("temporary").then(function(info){
+    console.log(info.quota)     //总的存储空间，字节为单位
+    console.log(info.usage)     //到目前为止使用了多少，字节为单位
+})
+```
+* 永久缓存：
+```javascript
+//这个api不一定有
+navigator.storage.persist().then(granted => {
+    if(granted) console.log("启动悠久缓存");
+})
+```
+
+## 第12章 前程似锦
+```
+介绍一些未来的新api：
+这些api用之前都要探测。
+```
+
+* 蓝牙api
+
+```javascript
+navigator.bluetooth.requestDevice({         // 请求访问附近的蓝牙设备
+    acceptAllDevices: true,                 // 接受附近的所有设备
+    optionalServices: ["battery_service"]   // 定义optionalServices以访问制定设备的服务
+}).then(device => console.log(device.name)) // 输出设备详情
+```
+
+* Web分享API
+
+```javascript
+navigator.share({           // 通过手机的那个原生的方式分享
+    title: "分享文章的标题",
+    url: "分享的url"
+}).then
+```
+
+* 支付请求API
+
+```javascript
+if(window.PaymentRequest){
+    var paymentMethods = [{
+        supportedMethods: ["basic-card"],
+        data: { supportedNetworks: ["visa", "mastercard"] }
+    }]
+    var details = {
+        displayItems: [{
+            label: "",
+            amount: {
+                currency: "USD",
+                value: "65.00"
+            }
+        }]
+    }
+
+    // 这个api有用的好像是只有这两句，展现了一个详情确定弹框给用户确认，
+    // 真正的与后台的数据交互还得自己来干。
+    var request = new PaymentRequest(paymentMethods, details);
+    request.show().then(paymentResponse => {   
+        var paymentData = {
+            method: paymentResponse.methodName,
+            details: paymentResponse.details
+        }
+
+
+        return fetch("/pay",{
+            method: "post",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(paymentData)
+        }).then(res => {
+            //
+        })
+    })
+}
+```
+
+* 形状检测api检测条形码
+
+```javascript
+var barcodeDetector = new BarcodeDetector();
+barcodeDetector.detect(image)       // 可以是<img>, CanvasImageSource, imageData, blob
+    .then(barcodes => {
+        barcodes.forEach(barcode => console.log(barcode.rawValue));
+    })
+```
+
