@@ -80,3 +80,12 @@ electron-builder
 ```
 npm shrinkwrap
 ```
+## 第6章 探索NW.js和Electron的内部机制
+```
+讲解了nw和Electron的内部原理，
+由于它们之间的不同，
+导致nw可以在同一个上下文中访问node和浏览器的api，
+Electron要通过特殊的方式进行交流，
+
+这一章只是走马观花的说了一下。
+```
