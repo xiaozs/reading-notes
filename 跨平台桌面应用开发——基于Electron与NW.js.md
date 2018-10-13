@@ -213,3 +213,57 @@ win.isKiosk();
 win.setKiosk(flag);
 ```
 
+## 第8章 创建托盘应用
+
+```javascript
+//nw
+const gui = require("nw.gui");
+const tray = new gui.Tray({ 
+    title: "My tray app",   //文字的只能在苹果上用
+    icon: "图片url"         //放在index.html同级目录下
+});
+//托盘菜单
+const note = [
+    { title: "菜单标题", click:() => { //todo } }
+]
+const menu = new gui.Menu();
+notes.forEach(note = >{
+    menu.append(new gui.MenuItem({
+        label:note.title
+        click:note.click
+    }))
+})
+tray.menu = menu;
+```
+```javascript
+const electron = require("electron");
+const app = electron.app;
+const Menu = electron.Menu;
+const tray = electron.Tray;
+const BrowserWindow = electron.BrowserWindow;
+
+let appIcon = null;
+let mainWindow = null;
+
+const note = [
+    { 
+        title: "菜单标题", 
+        click:() => {
+            //todo,electron要涉及到ipc，之后应该有介绍，这里就算了
+        }
+    }
+]
+
+app.on("ready", () => {
+    appIcon = new Tary("icon@xx.png");  //创建带图标托盘
+    let contextMenu = Menu.buildFromTemplate(notes.map(note => ({
+        label:note.title,
+        type:"normal",
+        click:note.click
+    })));
+    appIcon.setToolTip("图标的工具提示");
+    appIcon.setContextMenu(contextMenu);
+})
+```
+
+## 第9章 创建托盘应用
