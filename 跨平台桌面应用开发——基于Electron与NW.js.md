@@ -51,3 +51,16 @@ if(process.versions.electron) {
 
 shell.openItem(filePath)    //通过文件路径来打开调用api打开文件
 ```
+
+## 第4章 分发你的首款桌面应用
+```
+第一节
+是对应用图标的一些说明，这个不重要，之后再说
+
+第二节
+nw-builder
+electron-builder 
+这两个npm包可以用来构建app，
+
+构建app，对生成的各个app文件通过工具来修改它们的应用图标
+```
