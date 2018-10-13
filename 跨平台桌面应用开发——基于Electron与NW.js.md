@@ -32,3 +32,22 @@ app.on("ready", () => {
     })
 })
 ```
+
+## 第3章 构建你的首款桌面应用
+
+```
+以一个文件浏览器为例子，介绍了开发方式，只要动一点node和前端就能做，比较简单
+唯一有点设计api的只有这个：
+```
+
+```javascript
+//同一套代码同时可以适配electron和nw，我觉得没有什么用处
+let shell;
+if(process.versions.electron) {
+    shell = require("electron").shell;
+} else {
+    shell = window.require("nw.gui").shell
+}
+
+shell.openItem(filePath)    //通过文件路径来打开调用api打开文件
+```
