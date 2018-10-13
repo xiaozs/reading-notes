@@ -80,6 +80,8 @@ electron-builder
 ```
 npm shrinkwrap
 ```
+
+
 ## 第6章 探索NW.js和Electron的内部机制
 ```
 讲解了nw和Electron的内部原理，
@@ -89,3 +91,125 @@ Electron要通过特殊的方式进行交流，
 
 这一章只是走马观花的说了一下。
 ```
+
+
+## 第7章 自定义桌面应用的外观
+* 设置窗口大小
+```javascript
+//nw
+//package.json
+{
+    "window": {
+        "width": 300,
+        "height": 200,
+        "max_width": 1024,
+        "min_width": 800,
+        "max_height": 768,
+        "min_height": 600
+    }
+}
+
+//代码
+const gui = require("nw.gui");
+const win = gui.Window.get();
+
+win.width = 1024;
+win.height = 768;
+
+//设置窗口坐标
+win.x = 400;
+win.y = 500;
+
+```
+```javascript
+//Electron
+app.on("ready", () => {
+    mainWindow = new BrowserWindow({
+        width: 400,
+        height: 200,
+        maxWidth: xxx,
+        minWidth: xxx,
+        maxHeight: xxx,
+        minHeight: xxx,
+        x: xxx,
+        y: xxx
+    })
+})
+```
+
+* 全屏
+```javascript
+//nw
+{
+    "window": {
+        "fullscreen": true
+    }
+}
+
+//这玩意貌似有bug，有时需要html的全屏api
+const gui = require("nw.gui");
+const window = gui.Window.get();
+window.enterFullscreen();
+window.leaveFullscreen();
+```
+```javascript
+//Electron
+//初始化
+mainWindow = new BrowserWindow({ 
+    fullscreen: true,
+    fullscreenable: true
+});
+//代码
+const remote = require("electron").remote;
+const win = remote.getCurrentWindow();
+win.isFullScreen();
+win.setFullScreen(flag);
+```
+
+* 窗口边框
+```javascript
+//nw
+{
+    "window": {
+        "frame": false,
+        "transparent": true //背景透明
+    }
+}
+//html元素要设置css，才能拖动
+-webkit-app-region: drag;
+```
+```javascript
+//Electron
+mainWindow = new BrowserWindow({ 
+    frame: false,
+    transparent: true
+});
+```
+
+* kiosk应用（那种银行、医院、图书馆开了就不能关，只能干这个事的那种应用）
+
+```javascript
+//nw
+{
+    "window": {
+        "kiosk": true
+    }
+}
+//代码
+const gui = require("nw.gui");
+const win = gui.Window.get();
+win.leaveKioskMode();
+
+```
+
+```javascript
+//Electron
+mainWindow = new BrowserWindow({
+    kiosk: true
+});
+const remote = require("electron").remote;
+const win = remote.getCurrentWindow();
+win.isKiosk();
+win.setKiosk(flag);
+```
+
