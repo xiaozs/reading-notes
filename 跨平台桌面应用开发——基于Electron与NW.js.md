@@ -266,4 +266,147 @@ app.on("ready", () => {
 })
 ```
 
-## 第9章 创建托盘应用
+## 第9章 创建应用菜单以及上下文菜单
+```javascript
+//平台判断代码
+const os = require("os");
+os.platform(); // => "darwin" //这个是苹果
+```
+* 抬头菜单
+
+```javascript
+//nw
+//apple
+const gui = require("nw.gui");
+const mb = new gui.Menu({ type: "menubar" });
+mb.createMacBuiltin("example");
+gui.Window.get().menu = mb;
+```
+```javascript
+//electron
+//apple
+const electron = require('electron');
+const Menu = electron.remote.Menu;
+const name = electron.remote.app.getName();
+
+const template = [{
+    label: '',  //mac上空字符串会变成应用名
+    submenu: [
+        {
+            label: 'About ' + name,
+            role: 'about'   //声明类型，指定默认行为
+        },
+        {
+            type: 'separator'   //分隔符
+        },
+        {
+            label: 'Quit',
+            accelerator: 'Command+Q', //快捷键
+            click: electron.remote.app.quit
+        }
+    ]
+}];
+
+const menu = Menu.buildFromTemplate(template);
+Menu.setApplicationMenu(menu);
+```
+
+```javascript
+//nw
+//Windows/Linux
+const gui = require('nw.gui');
+const menuBar = new gui.Menu({ type: 'menubar' });
+const fileMenu = new gui.MenuItem({ label: 'File' });
+
+const sayHelloMenuItem = new gui.MenuItem(
+    {
+        label: 'Say hello',
+        click: () => { alert('Hello'); }
+    }
+);
+
+const quitAppMenuItem = new gui.MenuItem(
+    {
+        label: 'Quit the app',
+        click: () => { process.exit(0); }
+    }
+);
+
+// 还是挺容易的，不过这里的嵌套太烦了吧
+const fileMenuSubMenu = new gui.Menu();
+fileMenuSubMenu.append(sayHelloMenuItem);
+fileMenuSubMenu.append(quitAppMenuItem);
+
+fileMenu.submenu = fileMenuSubMenu;
+
+menuBar.append(fileMenu);
+gui.Window.get().menu = menuBar;
+```
+
+```javascript
+//electron
+//Windows/Linux
+//其实electron的Windows/Linux/mac代码都一样的
+const electron = require('electron');
+const Menu  = electron.remote.Menu;
+
+const sayHello = () => { alert('Hello'); };
+
+const quitTheApp = () => { electron.remote.app.quit(); };
+
+const template = [
+  {
+    label: 'File',
+    submenu: [
+      {
+        label: 'Say Hello',
+        click: sayHello
+      },
+      {
+        label: 'Quit the app',
+        click: quitTheApp
+      }
+    ]
+  }
+];
+
+const menu = Menu.buildFromTemplate(template);
+Menu.setApplicationMenu(menu);
+```
+
+* 上下文菜单(右键菜单)
+```javascript
+//nw
+const gui = require('nw.gui');
+const menu = new gui.Menu();
+menu.append(new gui.MenuItem({
+    icon: 'picture.png',
+    label: 'Insert image',
+    click: ()=>{} 
+}));
+el.addEventListener('contextmenu',(event) => {
+    event.preventDefault();
+    x = event.x;
+    y = event.y;
+    menu.popup(event.x, event.y);
+    return false;
+});
+```
+```javascript
+//electron
+var electron = require('electron');
+var Menu = electron.remote.Menu;
+var MenuItem = electron.remote.MenuItem;
+const menu = new Menu();
+menu.append(new MenuItem({
+    label: 'label',
+    click: () => {}
+}));
+el.addEventListener('contextmenu',(event) => {
+    event.preventDefault();
+    x = event.x;
+    y = event.y;
+    menu.popup(event.x, event.y);
+    return false;
+});
+```
