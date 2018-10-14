@@ -12,3 +12,15 @@
 * ```node-gyp build``` 构建
 * ```node-gyp clean``` 清除
 * ```node-gyp rebuild``` = clean + configure + build
+
+## 第2章 C++模块原理简析
+```
+介绍了用c++写模块的理由：
+```
+* 性能要求
+* 包装已有的c++模块给node调用
+
+```
+还有模块加载相关的原理
+（看不太懂，也记不住）
+```
