@@ -86,3 +86,45 @@ npm3扁平化却又失去了这个特点，
 import "xxx.dart" deferred as rarelyUsed;
 rarelyUsed.loadLibrary().then(onLoad);
 ```
+
+
+## 第4章 函数
+```
+只记录一下有意思的地方：
+```
+* 级联：
+```dart
+var address = new Address.of("Freddy Krueger");
+address.setStreet("Elm", "13a");
+address.city = "Carthage";
+address.state = "Eurasia";
+address.zipCode(66666, extend: 66666);
+
+//相当于
+new Address.of("Freddy Krueger")
+    ..setStreet("Elm", "13a")
+    ..city = "Carthage"
+    ..zipCode(66666, extend: 66666);
+```
+
+* Function类
+```
+任何声明了call方法的类，都隐含地实现了Function类。
+它们的实例都可以，用 obj() 来调用对应的call方法，
+
+我觉得它们这样搞实在是太难懂了，
+直接来一个运算符重载，重载()就直观多了。
+不过能用就好，是一个非常好的特性。
+```
+
+* 生成器：
+```
+虽然在前言里面，作者大大咧咧的说了，
+dart是唯一同时支持
+同步/异步函数、
+同步/异步生成器
+四种模式的语言，
+但是在我仔细看过以后，js、ts已经实现了，
+语法上面说来大同小异，
+甚至在dart里面还多了个sync同步关键字
+```
