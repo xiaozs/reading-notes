@@ -213,3 +213,19 @@ hapi中内置了对cors的支持，只要简单的配置，就可以在Server、
 
 其余还有很多和http相关的安全知识，推荐复习。
 
+
+
+## 第10章 使用Lab、Code和server.inject()进行测试
+
+下面这两个没有什么好说的：
+* Lab：测试执行器
+* Code：断言库
+
+server.inject：
+* 这个api用于伪造请求（不通过http、不监听端口、）
+ 
+之后还介绍了spy、stub这些测试相关的知识，（感觉比这本说得好懂《编写可测试的JavaScript 代码》）<br>
+spy、stub可以使用sinon这个库<br>
+还介绍了proxyquire这个库，<br>
+（这个库的原理是劫持require函数，把require的模块替换成mock，<br>
+和那些依赖注入是一个意思，但是由于是劫持系统函数，就搞得像是系统自带支持一样，特别的简单，透明）
