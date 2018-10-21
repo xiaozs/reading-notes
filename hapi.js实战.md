@@ -150,3 +150,66 @@ response.etag(hash);
 上面的缓存方式一般是用的key-value对存储，为了避免冲突有这样的一些分区策略：
 * **分区**：多个应用公用一个数据库的时候，每一个应用要对应一个分区，（分区这个说法是一个抽象，具体到实现的话，例如用的是mongodb，可以一个分区就是一个数据库）
 * **段**：为了方便我们经常会用数据库的ID来做为key在缓存里面做存取，为了能样一个ID能取到不同的数据（key-value是一对一的），去要为分区分段
+
+
+## 第9章 身份验证和安全
+* 身份验证：鉴定或弄清除你是谁
+* 授权：许可或弄清楚允许你做什么
+
+
+```javascript
+//身份验证
+
+const validate = function(request, usernmae, password, callback){
+    callback(err, isValid, { scope:["权限1"] })
+}
+
+server.auth.strategy("策略名称", "基础策略名称", { validateFunc: validate })
+
+```
+```javascript
+// 授权
+server.route({
+
+    config: {
+        auth: {
+            strategy: "策略名称",
+            scope: ["权限1"]
+        }
+    }
+
+})
+
+//try模式
+server.route({
+
+    config: {
+        auth: {
+            strategy: "策略名称",
+            mode: "try"
+        },
+        handler: function(request, reply) {
+            if(request.auth.isAuthenticated) { //身份验证是否通过
+                
+            }
+        }
+    }
+
+})
+```
+
+```
+那些第三方登录验证，也可以用这一套api来包装出自己的插件。
+```
+
+```
+hapi中内置了对cors的支持，只要简单的配置，就可以在Server、connection、route三个粒度上设置对cors的支持。
+```
+
+避免csrf攻击的方法：
+* csrf令牌：在生成页面的时候，在页面表单上加一个动态的隐藏字段。后台在接受到请求的时候要验证这个字段。
+* 使用这种方法的时候某些页面不能设置cors，否则可以通过先下载页面取得csrf令牌
+
+
+其余还有很多和http相关的安全知识，推荐复习。
+
