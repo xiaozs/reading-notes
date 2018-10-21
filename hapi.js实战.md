@@ -109,12 +109,44 @@ Joi是一个验证库，
 2. 插件依赖
 ```
 
-```
-插件间通讯：
+```javascript
+//插件间通讯：
 
-server.expose("methodName", () => { return val; }) 在插件内注册一个函数，
-server.plugins["plugins-name"].methodName() 来调用
+server.expose("methodName", () => { return val; }) //在插件内注册一个函数，
+server.plugins["plugins-name"].methodName() //来调用
 
 server.decorate("server", "propName", obj);
 server.propName //obj;
 ```
+
+
+## 第8章 充分利用缓存
+```javascript
+// 设置缓存头
+response.header(name, value, options)
+server.route({
+    config: {
+        cache: {
+            privacy: "private",
+            expiresIn: 86400 * 1000
+        }
+    }
+})
+```
+```javascript
+//ETag
+var hash = parseHash(data);
+var response = replay(data);
+response.etag(hash);
+```
+
+
+之后还对catbox（一个缓存相关的库）进行了介绍：
+* 这个库应该是比较简单的，所作的事就是定义接口，主要的逻辑在各个策略包当中，可以切换策略包以无缝切换多种存储方式。
+* 因为hapi里面内置了这个库，所以在配置过策略包后可以通过配置的方式来对某一个接口的缓存策略进行设置。
+* 上面的这个方法也适用于服务器方法，在服务器方法进行注册时顺便配置一下就可以启用，所以是对原有代码来说是透明的。
+
+
+上面的缓存方式一般是用的key-value对存储，为了避免冲突有这样的一些分区策略：
+* **分区**：多个应用公用一个数据库的时候，每一个应用要对应一个分区，（分区这个说法是一个抽象，具体到实现的话，例如用的是mongodb，可以一个分区就是一个数据库）
+* **段**：为了方便我们经常会用数据库的ID来做为key在缓存里面做存取，为了能样一个ID能取到不同的数据（key-value是一对一的），去要为分区分段
