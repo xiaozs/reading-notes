@@ -24,3 +24,12 @@
 * gulp.dest创建可写流
 * 虚拟文件对象 = 文件名 + 内容
 * gulp.pipe操纵虚拟文件对象
+
+## 第3章 用Gulp配置本地开发环境
+gulp4新api：
+* gulp.series：串行执行任务
+* gulp.parallel：并行执行任务
+* gulp.watch：观察符合glob的文件的增删改，执行回调
+
+（感觉gulp4是比gulp3执行会更快，但是配置更复杂了）
+
