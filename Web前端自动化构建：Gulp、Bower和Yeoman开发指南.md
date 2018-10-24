@@ -66,3 +66,22 @@ Yeoman 的组装流程：
 * 写入文件：从项目模板中把文件复制到目录中
 * 安装依赖
 
+
+
+## 第6章 不同环境下的Gulp
+gulp4的新api：
+
+```javascript
+gulp.src(glob, {
+    since: time //时间戳，挑选出增改在这个时间之后的文件
+})
+
+gulp.lastRun(taskName) //taskName上次运行的时间戳
+
+//上面的2个api的组合技能，只能对一对一的文件处理流程有用
+
+//要对多对1的流程，可配合gulp-cached和gulp-remember使用
+//还要配合watcher.on("unlink", cb)来监察文件的删除
+//从gulp-cached删除文件
+```
+这部分应该是整本书最复杂的地方了，通过这个步骤就可以搭建可以增量构建的环境了。
