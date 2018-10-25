@@ -97,3 +97,19 @@ gulp.lastRun(taskName) //taskName上次运行的时间戳
 
 挺有复习价值的。
 ```
+
+## 第8章 扩展Gulp
+
+vinyl(虚拟文件对象)有下面的属性：
+* base：文件名
+* path：文件路径
+* content：文件内容（buffer或者stream）
+
+这一章的内容比较难，由于gulp是基于流的任务系统，<br>
+所以为了使用一些不是纯流操作的插件<br>
+这章书介绍了一些stream、buffer、promise之间的转换工具
+
+联想到stream、buffer、promise、eventEmitter、obserable、iterable等一系列东西之间的关联，<br>
+深挖下去可能会有意想不到的收获，建议复习
+
+
