@@ -120,3 +120,10 @@ vinyl(虚拟文件对象)有下面的属性：
 git和github<br>
 最后是发布的命令行<br>
 和一些使用私有代码的方法。
+
+
+## 第10章 Yeoman generator 进阶
+介绍了Yeoman的sub-generator的写法，<br>
+使用.yo-rc.json文件存储用户选择、<br>
+使用原生api打包别人的generator包以满足自己的需求<br>
+等小技巧<br>
