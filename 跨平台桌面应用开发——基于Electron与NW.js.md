@@ -455,3 +455,19 @@ dialog.showSaveDialog({
     buttonLabel: 'Save photo'
 }, callback);
 ```
+
+
+## 第12章 存储应用数据
+这一章就更水了就用了个localStorage。
+
+存储数据的可选方案：
+|名字|数据库类型|类型|
+|---|---|---|
+|IndexedDB|键值|浏览器api|
+|localStorage|键值|浏览器api|
+|Lovefield|关系型|客户端库|
+|PouchDB|文档型|客户端库|
+|SQLite|关系型|内嵌|
+|NeDB|文档型|内嵌|
+|LevelDB|键值|内嵌|
+|Minimongo|文档型|客户端库|
