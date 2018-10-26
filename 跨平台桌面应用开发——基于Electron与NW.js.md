@@ -410,3 +410,19 @@ el.addEventListener('contextmenu',(event) => {
     return false;
 });
 ```
+
+
+## 第10章 拖曳文件以及定制界面
+```javascript
+//禁用浏览器的默认行为
+
+function stopDefaultEvent(event) {
+    event.preventDefault();
+    return false;
+}
+window.addEventListener("dragover", stopDefaultEvent);
+window.addEventListener("drop", stopDefaultEvent);
+
+```
+总而言之，nw和electron的拖曳api和html5的完全一样，<br>
+这章书主要介绍的是一些为了达到与系统的样式一致的css框架
