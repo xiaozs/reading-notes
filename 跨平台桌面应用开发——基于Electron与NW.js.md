@@ -471,3 +471,41 @@ dialog.showSaveDialog({
 |NeDB|文档型|内嵌|
 |LevelDB|键值|内嵌|
 |Minimongo|文档型|客户端库|
+
+
+## 第13章 从剪贴板复制和粘贴数据
+```javascript
+//nw.js
+const gui = require('nw.gui');
+//获取剪贴板对象
+const clipboard = gui.Clipboard.get();
+//设置剪贴板内容，现在只支持text
+clipboard.set(content, 'text');
+//获取剪贴板内容，现在只支持text
+clipboard.get('text');
+//清空剪贴板内容
+clipboard.clear();
+```
+```javascript
+//electron
+const electron = require('electron');
+//获取剪贴板对象
+const clipboard = electron.clipboard;
+//设置剪贴板内容（text）
+clipboard.writeText(content);
+//获取剪贴板内容（text）
+clipboard.readText();
+//清空剪贴板内容
+clipboard.clear();
+
+//electron还支持其他类型
+//html
+clipboard.writeHTML(content);
+clipboard.readHTML();
+//image
+clipboard.writeImage(content);
+clipboard.readImage();
+//RTF（富文本格式）
+clipboard.writeRTF(content);
+clipboard.readRTF();
+```
