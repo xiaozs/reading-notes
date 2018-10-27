@@ -509,3 +509,42 @@ clipboard.readImage();
 clipboard.writeRTF(content);
 clipboard.readRTF();
 ```
+
+## 第14章 绑定键盘快捷键
+用于应对**视窗没有焦点**时的事件响应。
+```javascript
+//nw.js
+
+//定义（在mac上绑定的时cmd+p）
+const pauseKeyOptions = {
+  key:'Ctrl+P',
+  active: togglePauseState,
+  failed: () => {
+    console.log('An error occurred');
+  }
+};
+
+//生成
+const pauseShortcut = new nw.Shortcut(pauseKeyOptions);
+//绑定
+nw.App.registerGlobalHotKey(pauseShortcut);
+//解绑
+process.on('exit', () => {
+  nw.App.unregisterGlobalHotKey(pauseShortcut);
+});
+
+```
+
+```javascript
+//electron
+
+const {app, globalShortcut} = require('electron');
+
+//绑定（flag是成败flag）
+const flag = globalShortcut.register('CommandOrControl+P',  callback)
+//解绑
+app.on('will-quit', () => {
+  globalShortcut.unregister('CommandOrControl+P');
+});
+```
+
