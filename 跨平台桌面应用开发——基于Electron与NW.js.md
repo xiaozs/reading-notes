@@ -592,3 +592,20 @@ new Notification('通知标题', {
 new BrowserWindow().webContents.openDevTools();
 ```
 还介绍了一个electron相关的调试工具Devtron
+
+
+## 第18章 为多平台打包应用
+//nw windows 步骤
+* npm i
+* 文件夹内容打成.zip
+* 重命名为*.nw
+* .zip放到node_modules/nw/nwjs/nw.exe
+* copy /b nw.exe+package.nw exeName.exe
+
+//electron windows 步骤
+* npm i -g asar
+* asar pack srcFolder app.asar
+* 下载electron源码，在resources中放入app.asar
+* 执行resources/..下的electron.exe
+
+之后是各个系统的工具，内容很多，重复也很高，推荐查阅。
