@@ -572,3 +572,23 @@ new Notification('通知标题', {
 ## 第16章 测试桌面应用
 这一章书的前面关于单元测试的说明比较水，
 后面的功能测试和集成测试还是太难了（篇幅较少，而且本身难度也大）
+
+
+## 第17章 调试并提升应用性能
+
+开发者工具
+
+```javascript
+//nw
+//package.json
+{
+    "window": {
+        "toolbar": true
+    }
+}
+```
+```javascript
+//electron
+new BrowserWindow().webContents.openDevTools();
+```
+还介绍了一个electron相关的调试工具Devtron
