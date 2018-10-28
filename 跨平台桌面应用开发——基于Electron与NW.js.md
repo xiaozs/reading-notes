@@ -548,3 +548,22 @@ app.on('will-quit', () => {
 });
 ```
 
+
+
+## 第15章 制作桌面通知
+```javascript
+//electron
+//要用到外部包
+const notifier = require('electron-notifications');
+let notification = notifier.notify('通知标题', {
+    icon: "iconUrl",
+    message: "详情"
+});
+```
+```javascript
+//nw
+new Notification('通知标题', {
+    icon: "iconUrl",
+    body: "详情"
+});
+```
