@@ -109,3 +109,17 @@ process.nextTick(cb)
 process.maxTickDepth 
 ```
 
+
+## 第3章 Buffers：使用比特、字节以及编码
+* 技巧15：Buffer转换为其他格式
+```javascript
+buf.toString();
+buf.toString("ascii");
+```
+* 技巧16：使用Buffer来修改字符串编码(同上)
+* 技巧17：使用Buffer来转换原始数据<br>
+（这里有一个很好懂的二进制文件分析例子，推荐复习）
+* 技巧17：创建自己的网络协议（和上面那个差不对意思）
+
+
+## 第4章 Events：玩转EventEmitter
