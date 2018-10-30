@@ -119,7 +119,51 @@ buf.toString("ascii");
 * 技巧16：使用Buffer来修改字符串编码(同上)
 * 技巧17：使用Buffer来转换原始数据<br>
 （这里有一个很好懂的二进制文件分析例子，推荐复习）
-* 技巧17：创建自己的网络协议（和上面那个差不对意思）
+* 技巧18：创建自己的网络协议（和上面那个差不对意思）
 
 
 ## 第4章 Events：玩转EventEmitter
+* 技巧19：从EventEmitter继承
+* 技巧20：混合EventEmitter
+* 技巧21：管理异常
+```javascript
+var EventEmitter = require("events").EventEmitter;
+var emitter = new EventEmitter();
+//error事件做了特殊处理，在不设置的时候有默认值
+//没有绑定的时候会打印异常栈
+//不过还是要用来emit来触发（我觉得很傻）
+emitter.on("error", () => {})
+```
+* 技巧22：通过domains管理异常
+```javascript
+//这个东西能够截获异步函数的异常
+//应该是和node底层相关
+//已被废弃
+
+var domain1 = domain.create();
+
+domain1.on('error', function(err){
+    //捕获异常后执行的回调
+});
+
+domain1.run(function(){
+    //这里发生的所有同/异步异常都会被捕获
+});
+```
+
+* 技巧23：反射
+```javascript
+let EventEmitter = require("events").EventEmitter;
+
+let emitter = new EventEmitter;
+
+//EventEmitter自带事件，
+//会在绑定新监听器的时候被触发
+emitter.on("newListener", () => {
+    
+})
+```
+
+* 技巧24：探索EventEmitter
+* 技巧25：组织事件名称
+* 技巧26：EventEmitter的替代方案
