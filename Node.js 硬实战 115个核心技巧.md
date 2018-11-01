@@ -167,3 +167,90 @@ emitter.on("newListener", () => {
 * 技巧24：探索EventEmitter
 * 技巧25：组织事件名称
 * 技巧26：EventEmitter的替代方案
+
+
+## 第5章 流：最强大和最容易误解的功能
+
+每个类的模板方法：
+
+|Name|User Methods|Description|
+|---|---|---|
+|stream.Readable|_read(size)|用于在I/O上获取数据|
+|stream.Writable|_write(chunk, encoding, callback)|用于在输出的目标写入数据|
+|stream.Duplex|_read(size)<br>_write(chunk, encoding, callback)|一个可读和可写的流，例如网络连接|
+|stream.Transform|_flush(size)<br>_transform(chunk, encoding, callback)|一个会以某种方式修改数据的双工流，没有输入数据要匹配输出数据的限制|
+
+
+* 技巧27：使用内置的流来实现静态web服务器
+* 技巧28：流的错误处理
+```javascript
+var stream = fs.createReadStream("xxx");
+stream.on("error", () => {})
+```
+* 技巧29：使用流的第三方模块
+```javascript
+var stream = require("stream");
+class StatStream extends stream.Readable {
+    constructor(limit){
+        super();
+        this.limit = limit;
+    }
+
+    //模板方法
+    //流被读的时候会被调用
+    _read(){
+        if(this.limit === 0) {
+            //done
+            this.push();
+        } else {
+            this.push(this.limit--);
+        }
+    }
+}
+```
+* 技巧30：正确地从流的基类继承
+
+|Problem|Solution|
+|---|---|
+|你想要使用流API来包装一个底层的I/O数据源|Readable|
+|你想要从一个程序中获取输出到其他地方使用，或者在程序中发送数据|Writable|
+|你想要以某种方式解析数据并且修改它|Transform|
+|你想要包装一个数据源，并且它也可以接受消息|Duplex|
+|你想要从流中提取数据，从测试到分析都不修改它|PassThrough|
+```javascript
+//继承时可以选择的选项
+super({
+    highWaterMark,      //停止读取底层数据源之前的内部缓冲数据的大小
+    encoding,           //触发缓冲数据自动编码
+    objectMode          //允许流是一个流对象，而不是字节
+})
+```
+* 技巧31：实现一个可读流
+* 技巧32：实现一个可写流
+* 技巧33：使用双工流转换和接收数据
+* 技巧34：使用转换流转换解析数据
+
+
+结合这几个例子和node的一些源码，可以知道
+1. 
+
+
+
+
+
+* 技巧35：流的优化<br>
+内置的流，允许配置内部缓冲区的大小。
+```javascript
+fs.createWriteStream("filePath", { bufferSize });
+```
+* 技巧36：使用老的流API
+旧的流API是一个不断发送data事件的对象：<br>
+可用```new stream.Readable().wrap(oldStream)```来生成一个新API对象
+
+* 技巧37：基于功能的流适配
+```process.stdin.isTTY```<br>
+```process.stdout.isTTY```<br>
+用于判断是否运行在TTY（用户的shell）<br>
+（可用于文字流的格式、颜色的输出，而输出到file的时候则用另外的方法）
+
+* 技巧38：测试流3
