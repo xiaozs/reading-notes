@@ -253,4 +253,40 @@ fs.createWriteStream("filePath", { bufferSize });
 用于判断是否运行在TTY（用户的shell）<br>
 （可用于文字流的格式、颜色的输出，而输出到file的时候则用另外的方法）
 
-* 技巧38：测试流3
+* 技巧38：测试流
+
+
+
+## 第6章 文件系统：通过异步和同步的方法处理文件
+
+* 技巧39：读取配置文件
+* 技巧40：使用文件描述
+
+|Stream|File descriptor|Description|
+|---|---|---|
+|stdin|0|标准输入|
+|stdout|1|标准输出|
+|stderr|2|标准错误|
+
+所谓文件描述就是中间这个数字
+
+* 技巧41：使用文件锁
+这个比较复杂（推荐复习）
+
+```javascript
+//使用独占标记创建锁文件
+fs.open("file.lock", "wx", (err) => {})
+//x代表以独占模式打开
+```
+
+```javascript
+fs.writeFile("file.lock", process.id, { flags: 'wx' }, (err) => {})
+```
+* 技巧42：递归文件操作
+* 技巧43：编写文件数据库
+* 技巧44：监视文件以及文件夹
+
+||原理|优缺点|
+|---|---|---|---|
+|fs.watch|由操作系统通知node进程|性能好<br>不会有遗漏<br>有兼容问题|
+|fs.watchFile|轮询文件系统|反之|
