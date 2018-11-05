@@ -471,3 +471,108 @@ var req = https.request(options, res => {
 req.end();
 req.on("error", callback)
 ```
+
+
+
+## 第8章 子进程：利用Node整合外部应用程序
+
+|methods|description|
+|---|---|
+|spawn|执行外部程序，并需要提供一组参数，以及一个在进程退出后的输入输出和事件的数据流接口|
+|execFile|执行外部程序，并需要提供一组参数，以及一个在进程退出后的缓冲输出的回调|
+|exec|在一个命令行窗口中执行一个或者多个命令，以及一个在进程退出后的缓冲输出的回调|
+|fork|在一个独立的进程中执行一个Node模块，并且需要提供一组参数，以及一个类似spwn方法里的数据流和事件式的接口，同时设置好父进程和子进程之间的进程间通信。|
+
+
+
+* 技巧56：执行外部应用程序
+
+```javascript
+var cp = require("child_process");
+//[]中放置参数可以防止注入，下同
+cp.execFile("echo", ["hello", "world"], (err, stdout, stderr) => {
+    err.code    //不为0时，执行失败
+    stderr      //具体失败原因
+})
+```
+
+* 技巧57：流和外部应用程序
+
+```javascript
+var cp = require("child_process");
+var child = cp.spawn("echo", ["hello", "world"])
+child.on("error", callback)
+child.stdout.pipe(stream);
+child.stderr.pipe(stream);
+```
+
+* 技巧58：在shell中执行命令
+```javascript
+var cp = require("child_process");
+var child = cp.exec("echo", ["hello", "world"], (err, stdout, stderr) => {
+    err.code    //不为0时，执行失败
+    stderr      //具体失败原因
+})
+```
+
+* 技巧59：分离子进程
+```javascript
+var cp = require("child_process");
+var fs = require("fs");
+
+var outFd = fs.openSync("./out.file", "a");
+var errFd = fs.openSync("./err.file", "a");
+
+var child = cp.spawn("app", [], {
+    detached: true,     // 父进程挂了，子进程不会跟着挂
+
+    //子进程的stdio，
+    //默认是["pipe", "pipe", "pipe"]，意思是用父进程的stdio，
+    //由于用了父进程的stdio，在子进程退出之前父进程都不会退出
+    //这样配置过后，父进程就不会等待子进程执行完毕才退出
+    stdio:["ignore", outFd, errFd]  
+})
+
+//移除子进程在父进程中的引用
+child.unref();
+
+//三者缺一不可
+```
+
+* 技巧60：执行Node程序
+Windows平台下：
+1. 
+```
+@echo off
+node "app.js" %*
+```
+UNIX平台下：
+1. #!/usr/bin/env node
+2. chmod +x app.js
+
+
+* 技巧61：Forking Node模块
+```javascript
+//child
+process.on("message", (msg) => {
+    process.send(msg);
+})
+
+//parent
+var cp = require("child_process");
+var child = cp.fork("./child");
+child.on("message", msg => {
+
+})
+child.send(msg);
+
+//断开子进程
+child.disconnect();
+```
+
+
+
+* 技巧62：运行作业
+* 技巧63：工作池
+* 技巧64：使用池模块
+* 技巧65：同步子进程（上面方法的同步版）
