@@ -161,3 +161,16 @@ LINQ特性：
 |SetElementVaule|设定子元素的值|
 |SetValue|设定当前元素的值|
 |WriterTo|将当前元素写入到一个XmlWriter|
+
+
+## 第6章 LINQ to XML 编程
+同上章
+
+## 第7章 LINQ to XML 和其它LINQ数据模型
+说了几个LINQ to XML配合其它LINQ api做的demo
+
+## 第8章 LINQ to XML 编程高级主题
+只有**轴**和**事件**两个主题有一定参考价值
+
+流式处理XML文档也有点意思，但是我觉得通过事件的方式来进行流式处理，可能会更好，不会出现demo里面的深嵌套和各种if/else
+
