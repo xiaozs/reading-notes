@@ -290,3 +290,289 @@ fs.writeFile("file.lock", process.id, { flags: 'wx' }, (err) => {})
 |---|---|---|---|
 |fs.watch|由操作系统通知node进程|性能好<br>不会有遗漏<br>有兼容问题|
 |fs.watchFile|轮询文件系统|反之|
+
+
+
+## 第7章 网络：Node真正的“Hello, World”
+* 技巧45：创建TCP服务端和客户端
+```javascript
+var net = require("net");
+var server = net.createServer(client => {   //client是一个socket
+    client.on("end", () => {
+
+    })
+    client.write(content);
+    client.pipe(stream)
+})
+server.listen(port, callback);
+```
+
+* 技巧46：使用客户端测试TCP服务器
+```javascript
+//这个才是客户端
+var client = net.connect(port);
+client.on("data", data => {});
+client.on("end", callback);
+client.end();
+```
+
+* 技巧47：改进实时性低的应用
+```javascript
+//socket利用Nagle算法做了缓冲，可能会导致延迟，这个api用来关闭
+socket.setNoDelay();
+
+//没有相连客户端的时候退出脚本
+server.unref();
+```
+
+* 技巧48：通过UDP传输文件
+```javascript
+//client
+var dgram = require("dgram");
+var socket = dgram.createSocket("udp4");
+socket.send(buffer, 0, buffer.length, port, remoteIP, callback);
+
+//server
+var dgram = require("dgram");
+var socket = dgram.createSocket("udp4");
+socket.on("message", callback);
+socket.bind(port);
+```
+
+
+
+* 技巧49：UDP客户端服务应用
+描述了一些UDP相关知识：
+    1. UDP是单工的，
+    2. 可以通过同时连接2个UDP来达到双工效果
+    3. 因为客户端没有bind端口，所以可以启动多个客户端从同一个端口发信。
+
+
+
+* 技巧50：HTTP客户端和服务器
+```javascript
+var http = require("http");
+var server = http.createServer((req, res) => {
+    res.writeHead(200, { "Content-Type": "text/plain" });
+    res.write(content);
+    res.end();
+});
+server.listen(port, callback);
+
+
+var req = http.request({ port }, res => {
+    res.headers;
+    res.statusCode;
+    res.on("data", data => {
+
+    })
+})
+
+```
+
+* 技巧51：重定向
+* 技巧52：HTTP代理
+* 技巧53：创建DNS请求<br>
+这个表不知道是怎么用的，总之先记录一下：
+
+|type|method|description|
+|---|---|---|
+|A|dns.resolve|一个A记录存储IP地址。它可以有一个关联的生存时间（TTL）来表示这个记录多久需要进行更新|
+|TXT|dns.resolveTxt|文本值可以用于在DNS上构建的其他服务的额外特性|
+|SRV|dns.resolveSrv|服务记录定义服务的定位数据，通常它会包括主机名称和端口号|
+|NS|dns.resolveNs|用于指定域名服务器|
+|CNAME|dns.resolveCname|相关的域名记录，设置为域名而不是IP地址|
+
+
+
+```javascript
+var dns = require("dns");
+dns.lookup("www.manning.com", (err, address) => {});
+dns.resolve("www.manning.com", (err, address) => {}); //这个address会是一个数组
+```
+
+
+* 技巧54：一个加密的TCP服务器
+```javascript
+//server
+var fs = require("fs");
+var tls = require("tls");
+
+var options = {
+    key: fs.readFileSync("server.pem"),         // 私钥
+    cert: fs.readFileSync("server-cert.pen"),   // 公钥
+    ca: [fs.readFileSync("client-cert.pen")],   // 客户端验证证书
+    requestCert: true
+};
+
+var server = tls.createServer(options, cleartextStream => {
+    cleartextStream.authorized  //服务器是否能够验证证书
+});
+
+server.listen(port, callback);
+
+
+//client
+var fs = require("fs");
+var os = require("os");
+var tls = require("tls");
+
+var options = {
+    key: fs.readFileSync("server.pem"),         // 私钥
+    cert: fs.readFileSync("server-cert.pen"),   // 公钥
+    ca: [fs.readFileSync("client-cert.pen")],   // 客户端验证证书
+    servername: os.hostname()                   // 主机名称作为服务器名称
+};
+
+var cleartextStream = tls.connect(port, options, callback);
+cleartextStream.authorized
+cleartextStream.setEncoding("utf8");
+cleartextStream.on("data", callback);
+```
+
+* 技巧55：加密的web服务器和客户端
+
+```javascript
+//server
+var fs = require("fs");
+var https = require("https");
+
+var options = {
+    key: fs.readFileSync("server.pem"),         // 私钥
+    cert: fs.readFileSync("server-cert.pen"),   // 公钥
+    ca: [fs.readFileSync("client-cert.pen")],   // 客户端验证证书
+    requestCert: true
+};
+
+var server = https.createServer(options, (req, res) => {
+    req.socket.authorized  //服务器是否能够验证证书
+});
+
+server.listen(port, callback);
+
+
+//client
+var fs = require("fs");
+var os = require("os");
+var https = require("https");
+
+var options = {
+    key: fs.readFileSync("server.pem"),         // 私钥
+    cert: fs.readFileSync("server-cert.pen"),   // 公钥
+    ca: [fs.readFileSync("client-cert.pen")],   // 客户端验证证书
+    servername: os.hostname(),                  // 主机名称作为服务器名称
+    port,
+    method: "GET"
+};
+
+var req = https.request(options, res => {
+    res.on("data", callback);
+})
+req.end();
+req.on("error", callback)
+```
+
+
+
+## 第8章 子进程：利用Node整合外部应用程序
+
+|methods|description|
+|---|---|
+|spawn|执行外部程序，并需要提供一组参数，以及一个在进程退出后的输入输出和事件的数据流接口|
+|execFile|执行外部程序，并需要提供一组参数，以及一个在进程退出后的缓冲输出的回调|
+|exec|在一个命令行窗口中执行一个或者多个命令，以及一个在进程退出后的缓冲输出的回调|
+|fork|在一个独立的进程中执行一个Node模块，并且需要提供一组参数，以及一个类似spwn方法里的数据流和事件式的接口，同时设置好父进程和子进程之间的进程间通信。|
+
+
+
+* 技巧56：执行外部应用程序
+
+```javascript
+var cp = require("child_process");
+//[]中放置参数可以防止注入，下同
+cp.execFile("echo", ["hello", "world"], (err, stdout, stderr) => {
+    err.code    //不为0时，执行失败
+    stderr      //具体失败原因
+})
+```
+
+* 技巧57：流和外部应用程序
+
+```javascript
+var cp = require("child_process");
+var child = cp.spawn("echo", ["hello", "world"])
+child.on("error", callback)
+child.stdout.pipe(stream);
+child.stderr.pipe(stream);
+```
+
+* 技巧58：在shell中执行命令
+```javascript
+var cp = require("child_process");
+var child = cp.exec("echo", ["hello", "world"], (err, stdout, stderr) => {
+    err.code    //不为0时，执行失败
+    stderr      //具体失败原因
+})
+```
+
+* 技巧59：分离子进程
+```javascript
+var cp = require("child_process");
+var fs = require("fs");
+
+var outFd = fs.openSync("./out.file", "a");
+var errFd = fs.openSync("./err.file", "a");
+
+var child = cp.spawn("app", [], {
+    detached: true,     // 父进程挂了，子进程不会跟着挂
+
+    //子进程的stdio，
+    //默认是["pipe", "pipe", "pipe"]，意思是用父进程的stdio，
+    //由于用了父进程的stdio，在子进程退出之前父进程都不会退出
+    //这样配置过后，父进程就不会等待子进程执行完毕才退出
+    stdio:["ignore", outFd, errFd]  
+})
+
+//移除子进程在父进程中的引用
+child.unref();
+
+//三者缺一不可
+```
+
+* 技巧60：执行Node程序
+Windows平台下：
+1. 
+```
+@echo off
+node "app.js" %*
+```
+UNIX平台下：
+1. #!/usr/bin/env node
+2. chmod +x app.js
+
+
+* 技巧61：Forking Node模块
+```javascript
+//child
+process.on("message", (msg) => {
+    process.send(msg);
+})
+
+//parent
+var cp = require("child_process");
+var child = cp.fork("./child");
+child.on("message", msg => {
+
+})
+child.send(msg);
+
+//断开子进程
+child.disconnect();
+```
+
+
+
+* 技巧62：运行作业
+* 技巧63：工作池
+* 技巧64：使用池模块
+* 技巧65：同步子进程（上面方法的同步版）
