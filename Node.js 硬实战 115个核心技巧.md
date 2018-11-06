@@ -573,6 +573,35 @@ child.disconnect();
 
 
 * 技巧62：运行作业
-* 技巧63：工作池
-* 技巧64：使用池模块
-* 技巧65：同步子进程（上面方法的同步版）
+* 技巧63：同步子进程（上面方法的同步版）
+
+
+## 第9章 网络：构建精简的网络应用
+* 技巧64：快速的静态网站服务器
+* 技巧65：在Node中使用DOM
+* 技巧66：在浏览器端使用Node模块
+* 技巧67：Express路由分离
+* 技巧68：自动重启服务器<br>
+介绍了nodemon包
+* 技巧69：配置web应用<br>
+介绍了nconf包
+* 技巧70：优雅地处理错误
+```javascript
+app.get("path", (req, res, next) => {
+    //出错时应该直接用next返回err
+    return next(err);
+});
+
+//异常处理的中间件有4个参数，
+//应该是用了Function.prototype.length的原因
+app.use((err, req, res, next) => {
+    //记录异常，
+    //返回错误页面/响应
+})
+```
+
+* 技巧71：RESTful web应用
+* 技巧72：使用自定义的中间件
+* 技巧73：使用事件进行解耦
+* 技巧74：使用WebSockets来处理sessions
+p279
