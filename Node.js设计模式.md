@@ -62,3 +62,15 @@
 把thunk换成Promise，用语法关键字来避免generator的api的显式调用，
 async关键字为转译器表明了generator转换的地方。
 ```
+
+## 第5章 流编程
+```
+介绍了缓冲和流的区别
+
+流stream是EventEmitter类的实例。
+抽象类：
+stream.Readable
+stream.Writable
+stream.Duplex
+stream.Transform
+```
