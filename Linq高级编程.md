@@ -286,3 +286,34 @@ var con = db.Contact.Single(cb);
 con.title = "new";
 db.SubmitChanges();
 ```
+
+
+
+## 第12章 高级查询概念
+
+```CSharp
+[Table(Name = "Person.Contact")]
+public class Contact {
+    //一对多关系
+    private EntitySet<Employee> _employees;
+    [Association(Storage = "_employees", otherKey = "ContactID")]
+    pulic EntitySet<Employee> Emps {
+        get { return this._employees; }
+        set { this._employees.Assign(value); }
+    }
+}
+
+
+var conQuery = 
+    from con in db.Contact
+    from emp in con.Emps
+    where con.FirstName == "Scott"
+    select new { con.FirstName, em.ManagerID };
+```
+```CSharp
+//默认情况下是，远程执行
+
+//本地执行方法如下：
+Contact con = db.Contact.Single(cb);
+con.Employee.load();
+```
