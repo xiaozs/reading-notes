@@ -317,3 +317,43 @@ var conQuery =
 Contact con = db.Contact.Single(cb);
 con.Employee.load();
 ```
+
+
+
+## 第13章 实体类
+乐观并发：
+* 用用程序试图将变更写回数据库。
+* 自从请求数据后，这个被请求的数据在数据库中已经发生了变更。
+
+|UpdateCheck 值|描述|
+|---|---|
+|Always|一直使用这个成员检测冲突(默认)|
+|Never|不使用这个成员来确定冲突|
+|WhenChanged|当这个成员的值已经被应用程序改动时才使用该成员检测冲突|
+
+```CSharp
+//尝试所有的数据库更新，收集所有并发冲突并在更改完成后将它们返回。
+ConfilctMode.ContinueOnConflict
+//当检测到第一个并发冲突时立即终止更新操作
+ConfilctMode.FailOnFirstConflict
+db.SubmitChanges(ConfilctMode.ContinueOnConflict)
+
+//冲突会引发异常
+ChangeConflictException
+```
+
+```CSharp
+try {
+    db.SubmitChanges(ConfilctMode.ContinueOnConflict)
+} catch(ChangeConflictException ex) {
+    foreach(var oc db.ChangeConflicts) {
+        //保留对象中已经更改的当前值，但将其他值更新为数据库中的值。
+        RefreshMode.KeepChanges
+        //使用从数据库中检索的值替换当前对象的值
+        RefreshMode.KeepCurrentValues
+        //使用数据库中的值覆盖所有当前对象的值
+        RefreshMode.OverwriteCurrentValues
+        oc.Resolve(RefreshMode.KeepCurrentValues);
+    }
+}
+```
