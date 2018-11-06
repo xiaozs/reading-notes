@@ -174,3 +174,115 @@ LINQ特性：
 
 流式处理XML文档也有点意思，但是我觉得通过事件的方式来进行流式处理，可能会更好，不会出现demo里面的深嵌套和各种if/else
 
+
+
+## 第9章 LINQ to XML 和Visual Basic .NET
+介绍了vb.net操作xml的方法，<br>
+生成的话用的是类似于模板的语法，<br>
+查询的话是用的扩展索引器（语法有点特殊，不懂），<br>
+其余的地方是大差不差。
+
+
+
+## 第10章 LINQ to SQL 概述
+```CSharp
+[Table(Name = "Person.Contact")]
+public class Contact {
+    [Column(DBType = "nvarchar(8)")]
+    public string Title;
+}
+
+DataContext context = new DataContext("连接字符串");
+Table<Contact> contact = context.GetTable<Contact>();
+```
+
+
+|LINQ to SQL 对象|关系对象|
+|---|---|
+|DataContext|数据库|
+|实体类|表|
+|类成员|列|
+|关联|外键关系|
+
+
+```CSharp
+//用于指定数据库名称
+[Database(Name = "dbName")]
+public class Contact {
+
+}
+```
+
+|Column 特性|描述|默认值|
+|---|---|---|
+|Name|数据表中列的名称||
+|DbType|数据库列的数据库类型||
+|Storage|实体类的存储字段/变量||
+|IsPrimaryKey|指示所关联的列是否是相应表的主键|false|
+|IsDbGenerated|指示所关联的列是否自动生成它的值|false|
+|CanBeNull|指示所关联的列能否包含空值|true|
+|AutoSync|通知运行时在执行INSERT或者UPDATE操作之后获得列值。<br>Always、Never、OnUpdate、OnInsert|Never|
+|Expression|定义一个被计算的数据库列||
+|IsVersion|指示所关联的列是时间戳还是版本号|false|
+|UpdateCheck|指示LINQ to SQL如何处理并发冲突<br>Always、Never、WhenChanged||
+|IsDiscriminator|指示该列是否包含LINQ to SQL的继承层次的区别标识||
+
+
+|Association 属性|描述|
+|---|---|
+|Name|关联的名称|
+|Storage|指示存储字段/变量|
+|IsUnique|指示FK是否唯一约束|
+|IsForeignKey|指示连接/约束是否是一个外键|
+|ThisKey|指示实体类的成员表示关联中此方的键值|
+|OtherKey|指示目标实体类的一个或多个成员作为关联中另一方的键值|
+
+
+
+
+```CSharp
+//用于指定数据库名称
+[Association(
+    Name =  "FK_Employee_Contact_ContactID",
+    Storage = "_Employee",
+    ThisKey = "ContactID",
+    IsForeignKey = true
+)]
+public Employee Emp {
+    get { return this._Employee.Entity; }
+    set { this._Employee.Entity = value; }
+}
+private EntityRef<Employee> _Employee;
+```
+
+
+
+## 第11章 LINQ to SQL 查询
+增：
+```CSharp
+public class AdventureWorks: DataContext {
+    public AdventureWorks(string connection): base(connection) {}
+    public Table<Contact> Contact;
+}
+try {
+    AdventureWorks db = new AdventureWorks("连接字符串");
+    Contact con = new Contact();
+    con.Title = "Geek";
+    db.Contact.Add(con);
+    db.SubmitChanges();
+} catch(Exception ex) {
+
+}
+```
+删：
+```CSharp
+var con = db.Contact.Single(cb);
+db.Contact.Remove(con);
+db.SubmitChanges();
+```
+改：
+```CSharp
+var con = db.Contact.Single(cb);
+con.title = "new";
+db.SubmitChanges();
+```
