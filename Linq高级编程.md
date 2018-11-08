@@ -357,3 +357,30 @@ try {
     }
 }
 ```
+
+使用事务：
+```CSharp
+//隐式
+var db = new AdventureWorks("连接字符串");
+try {
+    using (var ts = new TransactionScope()){
+        var con = new Contact();
+        db.Contacts.Add(con);
+        db.SubmitChanges();
+    }
+} catch(Exception ex) {
+
+}
+```
+```CSharp
+//显式
+var db = new AdventureWorks("连接字符串");
+db.Connection.Open();
+db.Transaction = db.Connection.BefinTransaction();
+var con = new Contact();
+db.Contacts.Add(con);
+db.SubmitChanges();
+db.Transaction.Commit();
+db.Transaction.Dispose();
+db.Connecction.Close();
+```
