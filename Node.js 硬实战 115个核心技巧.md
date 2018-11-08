@@ -604,12 +604,45 @@ app.use((err, req, res, next) => {
 * 技巧72：使用自定义的中间件
 * 技巧73：使用事件进行解耦
 * 技巧74：使用WebSockets来处理sessions
-p279
+```javascript
+var express = require("express");
+var WebSocketServer = require("ws").Server;
+var parserCookie = express.cookieParser("some secret");
+var MemoryStore = express.session.MemoryStore;
+var store = new MemoryStore();
 
+var app = express();
+var server = app.listen(port);
 
+app.use(parseCookie);
+//session存到store里
+app.use(express.session({ store }));
+app.get("/random", (req, res) => {
+    //session内容设置
+    req.session.random = data;
+    req.send(200);
+});
 
+//webSocketServer依托于express，实现原理不明
+var webSocketServer = new WebSocketServer({ server });
+webSocketServer.on("connection", ws => {
+    ws.on("message", (data, flags) => {
+        parseCookie(ws.upgradeReq, null, err => {
+            //从协议升级时的请求报文的cookie中获取sessionId
+            var sid = ws.upgradeReq.signedCookies["connect.sid"];
 
+            //通过sid获取对应session
+            store.get(sid, (err, loadedSession) => {
+                //前面"/random"里面设置的值
+                loadedSession.random
+            })
+        })
+    })
+})
+```
 * 技巧75：升级Expressin 3 到 4
 * 技巧76：测试路由（这里其实是对Session进行测试，名不副实）
 * 技巧77：为中间件注入创建seams（说的是桩、spy之类的东西）
 * 技巧78：测试依赖远程服务的应用（用mock来替代真正的远程）
+
+## 第10章 测试：编写健壮代码的关键
