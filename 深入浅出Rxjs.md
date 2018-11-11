@@ -113,3 +113,41 @@ setTimeout(() => {
     2. Cold Observable：给新observer发送所有数据（包括旧数据）
 
 ## 第3章　操作符基础
+* 操作符函数的实现：
+    * 返回⼀个全新的Observable对象。
+```javascript
+function map(project) {
+    return new Observable(observer => {
+        //这里的this是链式调用这个方法的对象
+        this.subscribe({
+            next: value => observer.next(project(value)),
+            error: err => observer.error(error),
+            complete: () => observer.complete(),
+        });
+    });
+}
+```
+    * 对上游和下游的订阅及退订处理。
+```javascript
+function map(project) {
+    return new Observable(observer => {
+        //这里的this是链式调用这个方法的对象
+        var sub = this.subscribe({
+            next: value => observer.next(project(value)),
+            error: err => observer.error(error),
+            complete: () => observer.complete(),
+        });
+        return {
+            //上游完全可能在被订阅时分配了特殊资源，
+            //如果不明确地告诉上游这些资源再也⽤不着了的话
+            //它也不会释放这些资源，
+            unsubscribe: () => {
+                sub.unsubscribe();
+            }
+        }
+    });
+}
+```
+    * 处理异常情况。
+    * 及时释放资源。
+
