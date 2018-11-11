@@ -151,3 +151,35 @@ function map(project) {
     * 处理异常情况。
     * 及时释放资源。
 
+
+
+## 第4章　创建数据流
+|功能需求|操作符|
+|---|---|
+|直接操作观察者|create|
+|根据有限的数据产生同步数据流|of|
+|产生一个数值范围内的数据|range|
+|以循环方式产生数据|generate|
+|重复产生数据流中的数据|repeat和repeatWhen|
+|产生空数据流|empty|
+|产生直接出错的数据流|throw|
+|产生永不完结的数据流|never|
+|间隔给定时间持续产生数据|interval和timer|
+|从数组等枚举类型数据产生数据流|from|
+|从Promise对象产生数据流|fromPromise|
+|从外部事件对象产生数据流|fromEvent和fromEventPattern|
+|从AJAX请求结果产生数据流|ajax|
+|延迟产生数据流|defer|
+
+## 第5章　合并数据流
+
+|功能需求|操作符|
+|---|---|
+|把多个数据流以首尾相连方式合并|concat和concatAll|
+|把多个数据流中数据以先到先得方式hebing|merge和mergeAll|
+|把多个数据流中数据以一一对应方式合并|zip和zipAll|
+|持续合并多个数据流中最新产生的数据|combineLatest、combineAll和withLatestFrom|
+|从多个数据流中选取第一个产生内容的数据流|race|
+|在数据流前面添加一个指定数据|startWith|
+|只获取多个数据流最后产生的那个数据|forkJoin|
+|从高阶数据流中切换数据源|switch和exhaust|
