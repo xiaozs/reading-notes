@@ -34,10 +34,65 @@ node --prof-process xxx.log
 ## 第3章 代码
 1. 介绍了Promise的实现，和使用demo，对于我来说没有多大用处。
 2. 使用async/await的原因：调用栈更加清晰（这个也是废话）
-3. 
+3. 优化异常栈信息(v8独家)<br>
+Error.captureStackTrace
+```javascript
+const myObject = {};
+Error.captureStackTrace(myObject);
 
+//会输出captureStackTrace调用时的栈帧信息
+console.log(myObject.stack);
+```
+Error.prepareStackTrace
+```javascript
+Error.prepareStackTrace = function(error, callSites) {
+    error.toString();
 
+    //可以获取调用相关的各种元数据
+    //元数据，骚操作的味道
+    callSites.getFunctionName();
+    callSites.getLineNumber();
+    callSites.getFileName();
+    callSites.getColumnNumber();
+    callSites.getThis();
+    callSites.getTypeName();
+    callSites.getFunction();
+    callSites.getMethodName();
+    callSites.getEvalOrigin();
+    callSites.isToplevel;
+    callSites.isEval;
+    callSites.isName;
+    callSites.isConstructor;
 
+    return "console.error输出的信息"
+}
+```
+Error.stackTraceLimit(改变输出的行数)
+4. 可以使用Rust开发node模块
+```javascript
+//rust模块的调用
+
+const ffi = require(ffi);
+const rust = ffi.Library("rust生成的动态链接库路径", {
+    // 方法名：[输入列表, [输出]]
+    "fib": ["int", ["int"]]
+})
+
+//方法调用
+rust.fib(1)
+
+//后面还介绍了rust编写模块的方法，使用的时Neon的手脚架，
+//具体的编码逻辑等还要看《Node.js来一打C++扩展》
+```
+5. node的任务队列：(这里有大量的事例用来说明这些api的执行顺序，推荐复习)
+    1. timers：执行setTimerout()和setInterval()中到期的callback
+    2. I/O callbacks：上一轮循环中有少数的I/O callback会被延迟到这一轮执行
+    3. idle，prepare：仅内部使用
+    4. poll：最重要的阶段，执行I/O callback，在适当的条件下node会阻塞这个阶段
+    5. check：执行setImmediate()的callback
+    6. close callbacks：执行close事件的callback，如：socket.on("close", cb);
+
+6. process.on("uncaughtException", cb);
 
 
 ## 第4章 工具
