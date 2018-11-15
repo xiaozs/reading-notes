@@ -91,8 +91,27 @@ rust.fib(1)
     4. poll：最重要的阶段，执行I/O callback，在适当的条件下node会阻塞这个阶段
     5. check：执行setImmediate()的callback
     6. close callbacks：执行close事件的callback，如：socket.on("close", cb);
+    * poll阶段：
+        1. 当timers的定时器到期后，执行定时器的callback
+        2. 执行poll队列里面的I/O callback
+        * 如果poll queue不为空，则event loop将同步执行queue里的callback，直至queue为空，或者执行的callback达到系统上限。
+        * 如果poll queue为空，则可能发生一下情况。
+            * 如果代码使用setImmediate()设定了callback，则event loop将结束pool阶段并进入check阶段，执行check阶段的queue
+            * 如果代码没有使用setImmediate()，则event loop将阻塞在该阶段，等待callbacks加入poll queue，如果有callback进来则立即执行
+    * process.nextTick()不在event loop的任何阶段，而在各个阶段切换的中间执行。
 
 6. process.on("uncaughtException", cb);
 
 
 ## 第4章 工具
+
+* source-map-support修改了Error.prepareStackTrace，使压缩后的代码能配合source-map打印出压缩前的异常栈。
+* 调试正在运行的node程序
+    1. 找出该程序pid
+    2. ```node -e "process._debugProcess(pid)"```
+    3. chrome://inspect/#devices
+* vscode调试器配置
+* Hot Reload的实现原理
+```javascript
+//todo
+```
