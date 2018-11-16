@@ -646,3 +646,52 @@ webSocketServer.on("connection", ws => {
 * 技巧78：测试依赖远程服务的应用（用mock来替代真正的远程）
 
 ## 第10章 测试：编写健壮代码的关键
+
+* 技巧79：用内置模块写测试
+* 技巧80：编写验证异常的测试
+* 技巧81：创建自定义的断言
+* 技巧82：使用一个测试装置（就是测试框架）组织测试
+* 技巧83：使用Mocha编写测试
+* 技巧84：使用Mocha测试web应用
+* 技巧85：万能测试协议（TAP）（这玩意的api和qunit多少有点像）
+* 技巧86：持续集成（代码提交到服务器时，对其进行自动测试，一旦有问题给组员发送邮件或信息）
+* 技巧87：数据库装置
+//todo
+
+
+## 第11章 调试：用于发现和解决问题
+和异常相关的需要注意的点：
+1. throw只能用于同步
+2. 抛出的异常都应该继承自Error，否则打印不了异常栈
+3. 不要在node内置函数的callback里面抛出异常
+* 技巧88：处理未捕获的异常
+    1. process.on("uncaughtException", cb)
+    2. 使用domain
+* 技巧89：检查我们的Node代码
+
+推荐看《Node.js调试指南》：
+* 技巧90：使用Node的内置调试器
+* 技巧91：使用Node Inspector
+* 技巧92：对Node应用进行性能分析
+* 技巧93：内存泄漏的调试（heapdump生成内存快照，用chrome来查看）
+* 技巧94：使用REPL来检测运行中的程序（调试运行中的程序）
+```javascript
+var net = require("net");
+var repl = require("repl");
+//可以通过客户端和这个服务器进行交互
+//一旦连接了会给客户端提供一个js的repl
+net.createServer(socket => {
+    var r = repl.start({
+        input: socket,
+        output: socket,
+        useGlobal: true //可以设置全局变量
+    });
+    r.on("exit", () => socket.end());
+    r.context.xxx = xxx;
+    //在repl中暴露出xxx
+}).listen(port);
+```
+
+* 技巧95：跟踪系统调用<br>
+（和系统相关，在linux下用strace命令可以生成相关进程的系统调用记录）
+
