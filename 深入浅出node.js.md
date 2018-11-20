@@ -27,4 +27,18 @@ Module._extensions['.json'] = function(module, filename) {
 
 ## 第3章 异步I/O
 
+* 介绍了node中的异步I/O的思想、实现原理（实现原理看不懂）。
+* setTimeout、process.nextTick等api的执行先后（这个推荐看《Node.js调试指南》的第3章）
+
+
+
+## 第4章 异步编程
+由于这本书比较旧了，所以这章的内容也比较落后了，姑且看看
+
+* 描述的异步编程的优缺点
+* 接下来的一些异步编程相关的库
+* 异步并发控制：
+    1. 任务队列
+    2. 拒绝模式
+    3. 超时控制
 
