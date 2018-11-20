@@ -42,3 +42,19 @@ Module._extensions['.json'] = function(module, filename) {
     2. 拒绝模式
     3. 超时控制
 
+## 第5章 内存控制
+* 这部分说了一些虚拟机GC相关的算法(比较详细)
+* 内存状态的api，应该可以用来做监控系统
+* 内存泄漏：
+    * 产生原因：
+        1. 缓存
+        2. 队列消费不及时
+        3. 作用域未释放
+    * 排查方法：
+        1. v8-profiler
+        2. node-heapdump
+        3. node-mtrace
+        4. dtrace
+        5. node-memwatch
+        
+
