@@ -56,5 +56,31 @@ Module._extensions['.json'] = function(module, filename) {
         3. node-mtrace
         4. dtrace
         5. node-memwatch
-        
 
+## 第6章 理解Buffer
+* 有一个buffer拼接的相关例子，用于避免编码带来的问题（值得参考）
+* highWaterMark和性能的关系
+
+
+
+## 第7章 网络编程
+* 大部分内容是那些api介绍
+* websocket握手的过程值得一看
+* tls/ssl的原理值得一看
+
+## 第8章 构建Web应用
+只记录值得参考的部分：
+* 把登录口令放在queryString的方法：没有口令就生成一个，然后重定向到带口令的对应地址。
+* cookie加密的原理
+    1. 攻击者会猜测cookie的生成方法，来碰撞已有用户的cookie<br>
+    解决办法：在原有的cookie后面，加入以cookie、sercet、私钥加密成的hash，由于攻击者不知道后两者，所以无法生成猜测的cookie
+    2. 攻击者获取了cookie，<br>
+    解决办法：在用户进行访问的时候，set-cookie时，把用户对应的ua、ip等信息加密进cookie里面，由于攻击者的这些条件可能对应不上，就算获取到了cookie也没有用
+
+* 数据上传与安全：
+    1. 内存限制（限制报文大小）
+
+* 渲染：
+    1. Bigpipe技术：
+        * 先把框架模板发送到前端，之后的内容用\<script>来填充
+        * 一整个页面都在一个http请求里面完成
