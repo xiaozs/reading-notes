@@ -169,3 +169,21 @@ css的主要问题（值得思考）：
     * babel-plugin-transform-react-inline-elements：React 行内元素转换器
 
 ## 第10章 测试与调试
+测试框架需要以下功能：
+* 获取组件渲染后的vdom
+* 获取组件渲染后的dom
+* 查找dom的方法
+* 模拟事件发生的方法
+* 生成mock的方法
+
+（感觉jquery之类的应该非常好用）
+
+react独有的：
+* 测试快照：保存第一次测试的vdom，和本次进行对比
+
+最后有一个react组件渲染发生异常时，会一整个组件都渲染不出来，<br>
+react-component-errors库会给所有的组件方法加上猴子补丁，<br>
+并封装到try...catch语句中，这样就不会导致整棵树渲染失败。<br>
+(这个东西有一定的参考意义)
+
+
