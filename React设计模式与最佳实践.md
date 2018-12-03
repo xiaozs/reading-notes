@@ -154,3 +154,18 @@ css的主要问题（值得思考）：
 
 ## 第9章 提升应用性能
 
+1. key属性
+2. webpack构建时的production模式，UglifyJs压缩
+3. shouldComponentUpdate通过对比state、props，阻止render函数的执行<br>
+（extends自React.PureComponent时，该方法有默认实现）
+4. 传递给组件的方法，应该在constructor里面先用bind绑定一下上下文（上面提到过）
+5. 大组件分解成小组件（主要是阻止一小部分的数据变化引起了一整个大组件的重新渲染）
+
+其它的一些工具：
+1. immutable.js可以编写更完善的shouldComponentUpdate（默认的只做浅比较）
+2. react-perf-tool（自动化的Perf 插件）
+3. Babel 插件：
+    * babel-plugin-transform-react-constant-elements：React 常量元素转换器
+    * babel-plugin-transform-react-inline-elements：React 行内元素转换器
+
+## 第10章 测试与调试
