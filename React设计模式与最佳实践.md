@@ -194,3 +194,7 @@ react-component-errors库会给所有的组件方法加上猴子补丁，<br>
     2. this.state.array使用push等方法
 * 将数组索引作为key
 * 在DOM元素上展开props对象（会在dom上带上非标准属性）
+
+
+## 第12章 未来的行动
+说了一些怎么为React的开源事业做贡献的东西
