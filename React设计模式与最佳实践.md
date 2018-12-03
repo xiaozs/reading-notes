@@ -187,3 +187,10 @@ react-component-errors库会给所有的组件方法加上猴子补丁，<br>
 (这个东西有一定的参考意义)
 
 
+## 第11章 需要避免的反模式
+* 用prop初始化状态
+* 修改状态
+    1. 直接修改，不调用setState
+    2. this.state.array使用push等方法
+* 将数组索引作为key
+* 在DOM元素上展开props对象（会在dom上带上非标准属性）
