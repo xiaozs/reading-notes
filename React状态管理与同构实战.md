@@ -119,3 +119,40 @@ react-redux通过高阶组件将，原有的组件的props映射成store和actio
     reducer也很容易测试（提供数据，断言新生成的数据是否如预期）
     2. connect相当于是一个适配器层，用于指示视图层如何绑定控制器和数据源（分层很明确，非常好）
     3. 至于Provider，这东西是来搞笑的么？
+
+
+
+## 第5章 揭秘React同构应用
+* 同构的优缺点
+    1. 更好的性能（首屏直出、对低端机友好、恶劣网络友好、更好的用户体验）
+    2. seo优化支持
+    1. 复杂性
+    2. 前后无法完全复用
+    3. 增加了服务端TTFB
+
+* api:
+    renderToString：
+        旧：生成的html上会有data-react-checksum属性，该属性的值由该dom节点的vdom结构hash出来，用于前端校验是否需要重新渲染。
+        新：新api不会生成data-react-checksum，原理未知
+    renderToNodeStream：以流的方式输出html字符串
+
+* 其他事项：
+    1. 服务端上只有componentDidMount之前的生命周期方法有效，在这些方法上不能用浏览器独有api（localStorage、window等，应该在componentDidMount上用）
+    2. 对于数据拉取，典型做法是把请求逻辑放到React组件的静态方法中，可让前后复用（貌似是Next.js的做法）
+    3. isomorphic-fetch实现前后端一致的拉取api
+    4. 实在不能复用就if-else
+
+* 套路（和《同构JavaScript应用开发》中介绍的一样）：
+    1. 服务器拉取数据，修改了store
+    2. store序列化，保存在一个全局变量里面（要注意xss）
+    3. 用store在服务端渲染
+    4. 在客户端用那个全局变量恢复store
+    5. 前端渲染、进行校验
+
+* Next.js的demo（实现原理和上面的套路一样、还有些其他很复杂的功能）：
+    1. next内置了webpack和express
+    2. 路由分割使用的一个约定，放在pages文件夹下的一个文件对应一个页面
+    3. 用static async getInitialProps钩子实现前后端通用的数据拉取，钩子的参数是req, query之类的，**而且只有在页面组件里面才会被调用**
+    4. 钩子可以作为无状态组件（同时是一个function）的属性被调用
+    5. 提供Link元素，可作前端跳转，还支持预加载
+    6. 。。。
