@@ -80,3 +80,6 @@ CSS 像素也是与设备无关像
 4. 后端
     * 通过ua等判断用户设备类型，返回不同的网站
     * bigpipe（《深入浅出node.js》里面有介绍）
+
+## 第8章 工程问题
+介绍了Node、Bower、Grunt、Yeoman的安装使用
