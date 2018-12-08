@@ -34,3 +34,8 @@ windows上的则很简单。
 * ```git clone <fromPath> <toPath>```
 
 * 配置文件
+    1. .git/config 版本库特定的配置设置，可用--file选项修改，是默认选项。这些设置拥有最高优先级。
+    2. ~/.gitconfig 用户特定的配置设置，可用--global选项修改
+    3. /etc/gitconfig 系统范围的配置设置，可用--system选项修改它
+    4. ```git config -l```列出所有设置值
+    5. ```git config --unset <configName>````移除设置
