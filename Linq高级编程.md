@@ -384,3 +384,8 @@ db.Transaction.Commit();
 db.Transaction.Dispose();
 db.Connecction.Close();
 ```
+
+
+
+
+## 第14章 LINQ to DataSet

@@ -695,3 +695,64 @@ net.createServer(socket => {
 * 技巧95：跟踪系统调用<br>
 （和系统相关，在linux下用strace命令可以生成相关进程的系统调用记录）
 
+
+
+## 第12章 生产环境中的Node：安全地部署应用程序
+* 技巧96：将Node程序部署到云端（都是国外的云服务，貌似没啥用）
+* 技巧97：使用Apache和Ngnix部署Node程序
+* 技巧98：在80端口上安全地运行Node程序（如果不用技巧97的话）<br>
+80端口是特权端口，但使用sudo会有安全问题。<br>
+解决办法是：
+```shell
+//将3000端口映射到80
+iptables -t nat -I PREROUTING -p tcp --dport 80 -jREDIRECT --to-port 3000
+```
+
+* 技巧99：保持Node进程一直运行<br>
+有使用系统工具的（runit、Upstart等)<br>
+有使用Node模块的（forever）
+
+* 技巧100：在生产环境中使用WebSockets（是关于websocket代理相关的知识，建议参阅）
+* 技巧101：HTTP缓存
+* 技巧102：为程序的路由和扩展使用Node代理（使用http-proxy这个Node模块，用于Node集群）
+* 技巧103：使用集群保持程序的扩展性和弹性（使用了cluster这个模块，关于这个模块的使用、原理在《深入浅出node.js》中有更详细的内容描述）
+* 技巧104：包的优化<br>
+```shell
+npm prune --production //移除devDependencies
+npm shrinkwrap         //生成一个有每一个依赖的明确的版本信息的文件
+```
+* 技巧105：日志和日志服务（这里只介绍了一些日志工具，日志的内容、作用这些可以参考《深入浅出node.js》）
+
+
+
+## 第13章 编写模块，掌握Node的所有
+* 技巧106：计划编写我们的模块
+* 技巧107：验证我们模块的想法（单元测试、基准测试）
+* 技巧108：创建package.json文件
+* 技巧109：依赖处理
+    1. dependencies：模块正常运行需要的依赖
+    2. devDependencies：开发时需要的依赖
+    3. optionalDependencies：非必要的模块依赖```npm i package-name --save-optional```
+    4. peerDependencies：运行时需要的依赖(需要我们自己用命令安装)
+* 技巧110：语义化版本号
+    1. 主版本号：做了不兼容的api修改。
+    2. 次版本号：做了向下兼容的功能性新增。
+    3. 修订号：当你做了向下兼容的问题修正。
+
+
+* 技巧111：添加可执行脚本
+    1. 新建bin文件夹
+    2. 添加命令行文件(#!开头)
+    3. package.json中添加字段
+    ```json
+    "bin": {
+        "cmd-name": "cmd-file-path"
+    }
+    ```
+* 技巧112：在本地测试模块（npm link）
+* 技巧113：在不同版本Node中测试
+* 技巧114：发布模块
+* 技巧115：使用私有模块
+    1. 使用git来共享私有模块
+    2. 利用URL来共享私有模块
+    3. 使用私有的npm源来共享私有模块
