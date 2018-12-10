@@ -212,3 +212,19 @@ react-redux通过高阶组件将，原有的组件的props映射成store和actio
 * redux最佳实践：
     1. 数据结构扁平化（复杂数据源用函数式处理起来超麻烦）
     2. 使用reselect类库（这个库应该是监听了state的变化，实现了一套像是vue里面computed的反应式系统）
+
+## 第7章 单页面应用代码分割
+分割代码的方式：
+    1. 按照业务逻辑和依赖库分割（业务和库方别分割到不同文件）
+    2. 按照路由分割
+    3. 按照组件分割
+
+按需加载：
+    * 消极加载：不需要用户额外交互便进行加载
+    * 积极加载：用户进行了额外交互才进行加载
+
+组件懒加载原理：一个高阶组件，接收一个返回Promise<Component>的函数作为prop，<br>
+WillMount时调用这个函数，在Promise.resolve后调用forceUpdate进行重新渲染
+
+Redux reducer懒加载原理：store提供了replaceReducer方法，可整个替换reducer，<br>
+通过使用combineReducer函数将旧reducer和懒加载新得到的reducer合并，在调用replaceReducer
