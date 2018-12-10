@@ -118,7 +118,8 @@ react-redux通过高阶组件将，原有的组件的props映射成store和actio
     函数化组件很容易测试（提供数据，断言dom上是否显示了正确内容；触发事件，断言是否正确调用了回调）<br>
     reducer也很容易测试（提供数据，断言新生成的数据是否如预期）
     2. connect相当于是一个适配器层，用于指示视图层如何绑定控制器和数据源（分层很明确，非常好）
-    3. 至于Provider，这东西是来搞笑的么？
+    3. 至于Provider，这东西是来搞笑的么？<br>
+    （再看了一下，不是搞笑，connect的使用实在是太频繁了，必须把state绑到context上才能避免不断的重复引入state）
 
 
 
@@ -156,3 +157,58 @@ react-redux通过高阶组件将，原有的组件的props映射成store和actio
     4. 钩子可以作为无状态组件（同时是一个function）的属性被调用
     5. 提供Link元素，可作前端跳转，还支持预加载
     6. 。。。
+
+
+
+## 第6章 深入理解React技术内幕与生态社区
+* 高阶组件的注意事项：
+    1. 不可直接修改接收到的组件的自身行为。
+    2. 保证没有副作用
+    3. 一般通过添加props的形式给原有组件传递信息
+    4. 不要在render方法中使用高阶组件（搞不懂）
+    5. 高阶组件不会传递refs（搞不懂）
+
+* mixins的问题：
+    1. 不确定性：会直接修改state，且修改来源不确定。
+    2. 命名冲突。
+
+* 高阶组件的问题：
+    1. 不确定性：state的修改被转移到了props但仍然存在。
+    2. 命名冲突：如果两个高阶组件同时扩充一个同名prop问题仍然存在
+
+* 推荐用render prop、Function as Child Component:
+    * props.children是一个函数，的有控制反转的组件。
+    * 弊端：性能问题，因为每一次渲染都生成了一个新函数
+
+* 要把组件渲染到父节点之外：
+    1. 旧方法：render返回null，另外有一个方法用ReactDom.render把节点渲染到别的地方，需要绑定DidMount，WillUpdate，WillUnmount等钩子
+    2. 新方法：
+    ```javascript
+    render() {
+        return ReactDOM.createPortal(
+            this.props.children,
+            anyDomNode
+        )
+    }
+    ```
+
+
+* 对于setState方法这个现实，如何实现连续的state修改：
+    1. this.setState((prevState, props) => ({
+        count: prevState.count + 1
+    }))
+    2. 地狱回调
+    3. 使用DidUpdate钩子（什么狗屎?）
+    4. 包装setState返回promise
+
+
+
+
+* diff算法降低时间复杂度的方法：
+    1. dom节点跨层级的移动操作特别少（只对同一层级进行比较）
+    2. 相同类型组件会生成相似的树形结构，不同的生成不同的（不同类型不做比较，直接替换）
+    3. 同一层级可通过key进行区别（协助添加、删除、排序操作）
+
+* redux最佳实践：
+    1. 数据结构扁平化（复杂数据源用函数式处理起来超麻烦）
+    2. 使用reselect类库（这个库应该是监听了state的变化，实现了一套像是vue里面computed的反应式系统）
