@@ -49,3 +49,13 @@
 ## 第5章 Rx基础
 唯一有意思的地方是通过Observable.ObserveOn方法把回调拉倒别的进程里面执行这一点<br>
 其余的建议看《深入浅出Rxjs》
+
+## 第6章 测试技巧
+Rx通过**调度器**（scheduler）来实现虚拟时间，使得异步测试运行时间大大减少
+
+## 第7章 互操作
+Parallel类和并行LINQ利用线程池做并行处理。
+
+await Rx.LastAsync      //取事件流的最后/第一/所有结果，
+await Rx.FirstAsync     //其实就是监听其compelete,
+await Rx.toList         //并返回结果
