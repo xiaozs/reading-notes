@@ -228,3 +228,18 @@ WillMount时调用这个函数，在Promise.resolve后调用forceUpdate进行重
 
 Redux reducer懒加载原理：store提供了replaceReducer方法，可整个替换reducer，<br>
 通过使用combineReducer函数将旧reducer和懒加载新得到的reducer合并，在调用replaceReducer
+
+## 第8章 React应用性能优化
+react自带：
+1. 高效的diff算法（上面有说）
+2. Batch操作（一口气更新（setState异步））
+3. 摒弃脏检测更新方式（shouldComponentUpdate）
+
+其他：
+1. React.addons.Perf
+2. 和shouldComponentUpdate相关的
+    * recompose的@pure
+    * Redux connect的最后一个参数（提供各式state、props对比）
+    * 消除render里面的新建数组、函数
+    * PureComponent
+    * redux-worker中间件(这个最有搞头了)
