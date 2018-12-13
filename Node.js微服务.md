@@ -19,3 +19,39 @@
 * 可替换性：这一点是由低耦合保证的，因为实现了接口，所以可以替换实现
 * 独立性：接口隔离导致的独立，可以在没有交流的情况下完成开发。
 * 易于部署：相较复杂系统更易部署。
+
+## 第2章 基于Seneca和PM2构建Node.js微服务
+开头是一些node相关的基础知识。
+介绍了一个模块编写模式：
+```javascript
+// 好处：
+// 1. 能向模块传递配置
+// 2. 模块参数化，便于mock行为与数据
+function init(options) {
+    return {
+        fun1,
+        fun2
+    }
+}
+
+export init;
+```
+
+之后是Seneca库的使用：<br>
+Seneca比较有意思的一点是支持多种通用协议，<br>
+默认使用的tcp，可以通过插件生成express的中间件以支持http，<br>
+内置了一套简单的orm api（配合插件可以无缝切换不同的存储策略（大概吧））<br>
+还有就是模式匹配路由，还有请求转发这些功能。
+
+最后是pm2的使用：
+* ```pm2 start <appName>```启动应用
+* ```pm2 show <id>```获取id对应应用相关信息
+* ```pm2 monit```监控应用列表
+* ```pm2 logs```查看日志
+* ```pm2 reload <appName | all>```无缝重启某个/所有应用
+* ```pm2 stop <appName | all>```停止某个/所有应用
+* ```pm2 delete <appName | all>```删除某个/所有应用
+* ```pm2 start <appName> -i <count>```用集群启动程序
+* ```pm2 scale <appName> <count>```修改集群工作线程
+* ```pm2 startup```设置pm2为开机自启动服务
+* ```pm2 save```保存当前运行的app，开机自启动服务会启动他们
