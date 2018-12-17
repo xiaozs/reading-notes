@@ -175,7 +175,7 @@ win.setFullScreen(flag);
         "transparent": true //背景透明
     }
 }
-//html元素要设置css，才能拖动
+//html元素要设置，才能拖动
 -webkit-app-region: drag;
 ```
 ```javascript
@@ -425,7 +425,7 @@ window.addEventListener("drop", stopDefaultEvent);
 
 ```
 总而言之，nw和electron的拖曳api和html5的完全一样，<br>
-这章书主要介绍的是一些为了达到与系统的样式一致的css框架
+这章书主要介绍的是一些为了达到与系统的样式一致的框架
 
 
 ## 第11章 在应用中使用网络摄像头

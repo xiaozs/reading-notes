@@ -13,11 +13,11 @@
 npm、gulp、webpack相关内容
 
 ## 第5章 服务器端框架
-对koa、kraken、hapi、sails、derby、flatiron、loopBack进行简单的对比。
+对koa、kraken、hapi、sails、derby、flatiron、loopBack进行简单的对比。
 
 ## 第6章 深入了解Connect 和 Express
-这一章以一个demo展示了这两个库的代码架构、和使用方式，<br>
-比较深入，基本包括的一个网站需要的大部分基础功能了。
+这一章以一个demo展示了这两个库的代码架构、和使用方式，<br>
+比较深入，基本包括的一个网站需要的大部分基础功能了。
 
 ## 第7章 Web 程序的模板
 介绍了几个常用的js模板库，我个人觉得，模板库应该要符合这些条件：
