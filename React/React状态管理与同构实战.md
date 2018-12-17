@@ -119,7 +119,7 @@ react-redux通过高阶组件将，原有的组件的props映射成store和actio
     reducer也很容易测试（提供数据，断言新生成的数据是否如预期）
     2. connect相当于是一个适配器层，用于指示视图层如何绑定控制器和数据源（分层很明确，非常好）
     3. 至于Provider，这东西是来搞笑的么？<br>
-    （再看了一下，不是搞笑，connect的使用实在是太频繁了，必须把state绑到context上才能避免不断的重复引入state）
+    （再看了一下，不是搞笑，connect的使用实在是太频繁了，必须把state绑到context上才能避免不断的重复引入state）
 
 
 
@@ -207,10 +207,10 @@ react-redux通过高阶组件将，原有的组件的props映射成store和actio
 * diff算法降低时间复杂度的方法：
     1. dom节点跨层级的移动操作特别少（只对同一层级进行比较）
     2. 相同类型组件会生成相似的树形结构，不同的生成不同的（不同类型不做比较，直接替换）
-    3. 同一层级可通过key进行区别（协助添加、删除、排序操作）
+    3. 同一层级可通过key进行区别（协助添加、删除、排序操作）
 
 * redux最佳实践：
-    1. 数据结构扁平化（复杂数据源用函数式处理起来超麻烦）
+    1. 数据结构扁平化（复杂数据源用函数式处理起来超麻烦）
     2. 使用reselect类库（这个库应该是监听了state的变化，实现了一套像是vue里面computed的反应式系统）
 
 ## 第7章 单页面应用代码分割
@@ -220,17 +220,17 @@ react-redux通过高阶组件将，原有的组件的props映射成store和actio
     3. 按照组件分割
 
 按需加载：
-    * 消极加载：不需要用户额外交互便进行加载
+    * 消极加载：不需要用户额外交互便进行加载
     * 积极加载：用户进行了额外交互才进行加载
 
 组件懒加载原理：一个高阶组件，接收一个返回Promise<Component>的函数作为prop，<br>
 WillMount时调用这个函数，在Promise.resolve后调用forceUpdate进行重新渲染
 
-Redux reducer懒加载原理：store提供了replaceReducer方法，可整个替换reducer，<br>
-通过使用combineReducer函数将旧reducer和懒加载新得到的reducer合并，在调用replaceReducer
+Redux reducer懒加载原理：store提供了replaceReducer方法，可整个替换reducer，<br>
+通过使用combineReducer函数将旧reducer和懒加载新得到的reducer合并，在调用replaceReducer
 
-## 第8章 React应用性能优化
-react自带：
+## 第8章 React应用性能优化
+react自带：
 1. 高效的diff算法（上面有说）
 2. Batch操作（一口气更新（setState异步））
 3. 摒弃脏检测更新方式（shouldComponentUpdate）
@@ -239,7 +239,7 @@ react自带：
 1. React.addons.Perf
 2. 和shouldComponentUpdate相关的
     * recompose的@pure
-    * Redux connect的最后一个参数（提供各式state、props对比）
-    * 消除render里面的新建数组、函数
-    * PureComponent
+    * Redux connect的最后一个参数（提供各式state、props对比）
+    * 消除render里面的新建数组、函数
+    * PureComponent
     * redux-worker中间件(这个最有搞头了)
