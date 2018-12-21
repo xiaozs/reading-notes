@@ -37,3 +37,12 @@
         * render：用js来模拟dom环境（因为运行测试的是node环境）
         * mount：做全渲染，对于测试生命周期时非常有用
 
+## 第3章　解读React源码
+对react的一些核心代码的源码进行的评讲。
+* Virtual DOM 模型
+* 生命周期
+* setState
+* diff 算法
+* React Patch 方法
+
+## 第4章 认识Flux架构模式
