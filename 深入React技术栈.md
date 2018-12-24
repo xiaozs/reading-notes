@@ -48,7 +48,7 @@
 ## 第4章 认识Flux架构模式
 Flux的思想、实现什么的前面读的两本书里面都有说到了，就不再重复了。
 
-## 第4章 深入Redux应用架构
+## 第5章 深入Redux应用架构
 * middleware机制
 * middleware例子（主要是异步流）：
     * redux-thunk
@@ -56,3 +56,12 @@ Flux的思想、实现什么的前面读的两本书里面都有说到了，就�
     * redux-composable-fetch
 * Redux与路由：将和路由相关的操作也映射成action记录下来（这一点是其它两本书都没有说到了，值得深入）
 * Redux与组件（建议看《React状态管理与同构实战》）
+
+## 第6章 Redux高阶运用
+* 高阶reducer
+* Redux与表单
+    * redux-form-utils：可以自动完成大部分的绑定代码（这个插件挺有意思的）
+    * redux-form：redux-form-utils的基础上多加一个validate字段
+* Redux性能优化：
+    * Reselect：类似于vue的computed
+    * Immutable Redux
