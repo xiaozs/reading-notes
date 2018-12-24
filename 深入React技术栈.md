@@ -47,3 +47,12 @@
 
 ## 第4章 认识Flux架构模式
 Flux的思想、实现什么的前面读的两本书里面都有说到了，就不再重复了。
+
+## 第4章 深入Redux应用架构
+* middleware机制
+* middleware例子（主要是异步流）：
+    * redux-thunk
+    * redux-promise
+    * redux-composable-fetch
+* Redux与路由：将和路由相关的操作也映射成action记录下来（这一点是其它两本书都没有说到了，值得深入）
+* Redux与组件（建议看《React状态管理与同构实战》）
