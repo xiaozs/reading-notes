@@ -389,3 +389,4 @@ db.Connecction.Close();
 
 
 ## 第14章 LINQ to DataSet
+由于DataTableExtensions类给DataSet实现了IEnumerable<T>接口，所以和普通Linq查询没有什么区别。
