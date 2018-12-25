@@ -390,3 +390,8 @@ db.Connecction.Close();
 
 ## 第14章 LINQ to DataSet
 由于DataTableExtensions类给DataSet实现了IEnumerable<T>接口，所以和普通Linq查询没有什么区别。
+
+
+
+## 第15章 LINQ to SQL高级论题
+这章涉及了大量的托拉拽编程（没怎么看），还有多层操作（这个看不懂）。
