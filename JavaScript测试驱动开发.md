@@ -32,3 +32,36 @@ Arrange-Act-Assert（准备-行动-断言，3-As）模式
 这里通过了一个小demo来说明**单一职责原则**在测试中的重要性：
     * 目标明确所以易于测试
     * 依赖较少，容易测试
+
+测试替身：
+    * fake：适用于测试但不能用于生产环境的实现
+    * stub：被调用时可以快速返回预设数据，用来验证依赖返回（预设的）结果后代码的行为。
+    * mock：也可以返回预设数据。但它对交互进行跟踪，如调用的次数、调用的顺序。用于帮助验证被测代码和依赖之间的交互。
+    * spy：可以代理真实的依赖。当在测试期间与真实的服务交互，而我们又想对交互进行验证或者对选择的部分进行模拟时。
+
+**依赖注入**：依赖在调用时作为参数传递。
+```javascript
+//Sinon stub、mock、spy
+
+var sandbox;
+beforeEach(function() {
+    sandbox = sinon.sandbox.create();
+});
+
+var aSpy = sandbox.spy(existingFunction);
+expect(aSpy.called).to.be.true;
+express(aSpy).to.have.been.calledWith('magic');
+
+sandbox.stub(util, 'alias')
+       .withArgs('Robert')
+       .returns('Bob');
+
+var aMock = sandbox.mock(util)
+                   .expects('alias')
+                   .withArgs('Robert');
+aMock.verify();
+
+afterEach(function() {
+    sandbox.restore();
+});
+```
