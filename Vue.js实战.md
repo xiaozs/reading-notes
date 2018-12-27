@@ -40,3 +40,40 @@ v-model也有修饰符，用于对同步时机、同步内容的修改上。
     * 递归组件
     * 动态组件
     * 异步组件
+
+## 第8章 自定义指令
+介绍了指令的基本使用：
+    * 生命周期钩子
+    * 钩子的api，可以取到修饰符之类的
+在react里面要实现这些功能，要使用高阶组件
+
+## 第9章 Render函数
+一上来就是一顿vdom的介绍。<br>
+接着是createElement工厂函数。(这里还提供了一个cloneVNode方法用于实现slot的复制)<br>
+
+## 第10章 使用webpack
+略过
+
+## 第11章 插件
+```javascript
+MyPlugin.install = function (Vue, options) {
+    //全局注册组件（指令等功能资源类似）
+    Vue.component("component-name", {
+        //组件内容
+    })
+    //添加实例方法
+    Vue.prototype.$Notice = function () {
+        //逻辑
+    }
+    //添加全局方法或属性
+    Vue.globalMethod = function() {
+
+    }
+    //添加全局混合
+    Vue.mixin({
+        mounted: function(){
+            
+        }
+    })
+}
+```
