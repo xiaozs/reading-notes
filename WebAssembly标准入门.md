@@ -91,19 +91,28 @@ fetch('hello.wasm').then(response =>
   基本同上，但有兼容性问题<br>
   soruce是流，一般是fetch的返回值
 
+---
+
 * var module = new WebAssembly.Module(buffer);
 * var exports = WebAssembly.Module.exports(module); //获取导出信息
 * var imports = WebAssembly.Module.imports(module); //获取导入信息
 
+---
 
 * var sections = WebAssembly.Module.customSections(module, secName); //获取自定义段信息
+
+---
 
 * var instance = new WebAssembly.Instance(module, importObject);
 * WebAssembly.Instance.prototype.exports //获取导出内容
 
+---
+
 * var memory = new WebAssembly.Memory({ initial: number, maximum?: number });
 * WebAssembly.Memory.prototype.buffer //获取对象对应的buffer对象
 * WebAssembly.Memory.prototype.grow(number) //扩大内存对象的容量(会**复制**原有数据)
+
+---
 
 * var table = new WebAssembly.Table({element:'anyfunc', initial:number, maximum?: number }); //table对象现在只能用作函数指针表
 * WebAssembly.Table.prototype.get(index) //获取索引上的函数
@@ -111,5 +120,76 @@ fetch('hello.wasm').then(response =>
 * WebAssembly.Table.prototype.length
 * WebAssembly.Table.prototype.grow()
 
+---
+
 * 其他： 目前JavaScript的Number类型无法无损地表达64位整型数。<br>
 这意味着虽然WebAssembly 支持i64 类型的运算，但是<br>与JavaScript 对接的导出函数不能使用i64 类型作为参数或返回值。
+
+## 第4章 WebAssembly汇编语言
+
+S-表达式：用于描述树状结构的一种文本格式
+
+---
+
+|节点|类型|
+|---|---|
+|module|WebAssembly 模块根结点，即Module|
+|memory|Memory|
+|data|Memory 初始值|
+|table|Table|
+|elem|Table 元素初始值|
+|import|导入对象|
+|export|导出对象|
+|type|函数签名|
+|global|全局变量|
+|func|函数|
+|param|函数参数|
+|result|函数返回值|
+|local|局部变量|
+|start|开始函数|
+|mut|可变类型（全局变量默认不可变）|
+
+---
+
+* 数据类型
+    1. i32
+    2. i64
+    3. f32
+    4. f64
+    
+---
+
+* 函数定义: (func <函数别名> <函数签名> <局部变量表> <函数体>)  //4部分都可选
+* 函数签名: (param <变量别名> i32) (param <变量别名> f32) (result <变量别名> f64)
+* 局部变量表: (local i32) (local f32)
+* 函数别名: 用于替代 func[0] func[1] 这些
+
+---
+
+* 全局变量: (global <别名> <类型> <初值>)
+
+---
+
+* get_local: 通过用索引或变量别名，获取param和local的值
+* set_local: 反之
+
+---
+
+* i32.const n：在栈上压入值为n 的32 位整型数。
+* i32.add：从栈中取出2 个32 位整型数，计算它们的和并将结果压入栈。
+* i32.eq：从栈中取出2 个32 位整型数，比较它们是否相等，相等的话在栈中压入1，否则压入0。
+
+---
+
+* 直接调用: call <函数索引 | 函数别名>
+* 间接调用: 
+```wat
+//调用参数压栈
+//被调用的函数的table index压栈
+call_indirect (type <type索引 | type别名>)
+```
+
+---
+
+内存声明: (memory <大小>)
+初始化: (data )
