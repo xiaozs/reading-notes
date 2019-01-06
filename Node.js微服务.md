@@ -121,3 +121,14 @@ Seneca通过插件的方式组织模块<br>
         * error：错误（用户受影响，流程终止）
         * fatal：灾难（系统不可恢复的错误）
     * HTTP状态码：因为这个是标准，有利于服务间的通用沟通
+
+
+
+
+## 第6章 Node.js 微服务的测试及文档化
+使用了这些库：<br>
+Chai、Mocha、Sinon、chai-http<br>
+这些工具：<br>
+postman(一个类似于curl的东西)<br>
+文档化用的工具：<br>
+swagger
