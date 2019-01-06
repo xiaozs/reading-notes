@@ -132,3 +132,19 @@ Chai、Mocha、Sinon、chai-http<br>
 postman(一个类似于curl的东西)<br>
 文档化用的工具：<br>
 swagger
+
+
+
+
+## 第7章 微服务的监控
+《深入浅出node.js》、《hapi.js实战》里面有更详细的监控做法。<br>
+这里使用了一个很强大的库keymetrics
+
+* 服务监控：
+    * 内存指标
+    * CPU使用率
+    * 磁盘使用率
+    * 单位时间错误数
+    * 单位时间调用数
+    * 响应时间
+
