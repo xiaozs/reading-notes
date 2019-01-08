@@ -148,6 +148,7 @@ S-表达式：用于描述树状结构的一种文本格式
 |local|局部变量|
 |start|开始函数|
 |mut|可变类型（全局变量默认不可变）|
+|offset|内存初始化偏移|
 
 ---
 
@@ -191,5 +192,207 @@ call_indirect (type <type索引 | type别名>)
 
 ---
 
-内存声明: (memory <大小>)
-初始化: (data )
+* 内存声明: (memory <大小>)
+* 初始化: (data (offset i32.const 0) "hello")  //可以多次调用(小端)
+* 读取内存: 
+```wat
+;;读取内存12出的整数到栈上
+
+i32.const 12
+i32.load
+```
+或 
+```wat
+;;读取内存12出的整数到栈上
+;;align=4 是地址对齐标签
+
+i32.const 4
+i32.load offset=8 align=4
+```
+其他
+```wat
+;;i32.load<bite数>_<有无符号>
+
+i32.load8_s
+i32.load8_u
+i32.load16_s
+i32.load16_u
+i64.load8_s
+i64.load8_u
+i64.load16_s
+i64.load16_u
+i64.load32_s
+i64.load32_u
+```
+
+* 写入内存:
+```wat
+;;地址12处写入42
+i32.const 12 ;;address
+i32.const 42 ;;value
+i32.store
+
+;;其他
+i32.const 4  ;;address
+i32.const 42 ;;value
+i32.store offset=8 align=4
+```
+其他
+```wat
+i32.store8
+i32.store16
+i64.store8
+i64.store16
+i64.store32
+```
+* 获取内存容量:
+```wat
+memory.size
+```
+* 内存扩容:
+```wat
+;;入栈扩容大小
+memory.grow
+```
+
+---
+
+删除栈元素: drop
+
+---
+
+* 啥都不干: nop
+* 抛出异常: unreachable
+* block 指令块:
+```wat
+block <块别名>
+    ;;指令块拥有自己独立的栈帧
+    ;;指令块可以有返回值
+end
+```
+或
+```wat
+block <块别名> (result i32)
+    i32.const 13
+end
+```
+* if 指令块:
+```wat
+if <块别名>
+    ;;分支1
+else
+    ;;分支2
+end
+```
+或
+```wat
+if <块别名> (result <类型>)
+    ;;分支1
+else
+    ;;分支2
+end
+```
+* loop 指令块:
+```wat
+loop <块别名>
+    ;;只会执行1次，要和br配合使用
+end
+```
+* 跳转:
+```wat
+;;跳转到depth深度的块的开始
+;;当前块的深度为0
+;;套着当前块的块的深度为1
+;;以此类推
+br <depth>
+
+;;或者
+br <块别名>
+```
+或
+```wat
+;;会先从栈上弹出一个i32类型的值，如果该值不为0，则执行br
+br_if <块别名 | depth>
+```
+或
+```wat
+;;L[n]是一个长度为n 的label 索引数组
+;;先从栈上弹出一个i32类型的值m，如果m 小于n，则执行br L[m]，否则执行br L_Default
+br_table L[n] L_Default
+
+;;类似这样 br_table 2 1 0
+```
+
+* return: 跳出函数
+
+---
+
+* 导出对象:
+```wat
+(module
+    (func (export "wasm_func") (result i32)
+        i32.const 42
+    )
+    ;;声明同时导出
+    (memory (export "wasm_mem") 1)
+    (table (export "wasm_table") 2 anyfunc)
+    (global (export "wasm_global_pi") f32 (f32.const 3.14159))
+)
+```
+或
+```wat
+(module
+    (func (result i32)
+        i32.const 42
+    )
+    (memory 1)
+    (table $t 2 anyfunc)
+    (global $g0 f32 (f32.const 3.14159))
+
+    ;;先声明，后导出
+    (export "wasm_func" (func 0))
+    (export "wasm_mem" (memory 0))
+    (export "wasm_table" (table $t))
+    (export "wasm_global" (global $g0))
+)
+```
+
+* 导入对象:
+```wat
+(module
+    (import "js" "memory" (memory 1)) ;;import Memory
+    (import "js" "table" (table 1 anyfunc)) ;;import Table
+    (import "js" "print_i32" (func $js_print_i32 (param i32))) ;;import Fucntion
+    (import "js" "global_pi" (global $pi f32)) ;;import Global
+)
+```
+
+---
+
+* start函数：
+```wat
+(module
+    ;;实例化后能够立即执行一些启动操作
+    ;;启动函数不能包含参数，不能有返回值
+    (start $print_pi)
+    (import "js" "print_f32" (func $js_print_f32 (param f32)))
+    (func $print_pi
+        f32.const 3.14
+        call $js_print_f32
+    )
+)
+```
+
+---
+
+* 指令折叠:
+```
+i32.const 13
+get_local $x
+i32.add
+
+;;等价于
+
+(i32.add (i32.const 13) (get_local $x))
+
+```
