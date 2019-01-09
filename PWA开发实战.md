@@ -19,3 +19,18 @@ navigator.serviceWorker.register("/sw.js", {scope: "/"});
 navigator.serviceWorker.register("/sw-ginnos.js", {scope: "/Ginnos"});
 navigator.serviceWorker.register("/sw-ralphs.js", {scope: "/Ralphs"});
 ```
+
+## 第3章 CacheStorage API
+这一章同上。
+
+## 第4章 service worker生命周期和缓存管理
+这一章对生命周期的讨论比较完备，推荐复习
+
+生命周期: 
+* installing: 有钩子函数install，在侦测到新service worker脚本的时候会被执行，<br>
+这一步一般用来缓存应用脚本
+* installed/waiting:
+    * installed: installing成功完成了以后
+    * waiting: 但浏览器中有使用旧版service worker的页面时候
+* activating: 有钩子函数activate，一般用于清楚旧缓存
+* redundant: service worker被废弃
