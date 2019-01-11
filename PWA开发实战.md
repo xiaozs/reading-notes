@@ -50,3 +50,76 @@ navigator.serviceWorker.register("/sw-ralphs.js", {scope: "/Ralphs"});
 * 缓存优先，网络作为回退方案，并频繁更新缓存
 * 网络优先，缓存作为回退方案，并频繁更新缓存
 
+
+
+
+## 第6章 使用IndexedDB在本地存储数据
+
+```javascript
+//一旦授权后，存储的任何内容将不会被设备自动删除。内容只能通过用户操作进行删除。
+if (navigator.storage && navigator.storage.persist) {
+    navigator.storage.persist().then(function(granted) {
+        if (granted) {
+            console.log("Data will not be deleted automatically");
+        }
+    });
+}
+```
+
+常用IndexedDB库：
+* PouchDB
+* localForage
+* Dexie.js
+* IndexedDB Promised
+
+
+
+
+## 第7章 使用后台同步保证离线功能
+```javascript
+//获取对象
+
+//worker
+self.registration
+//浏览器
+navigator.serviceWorker.ready.then(function(registration) {});
+```
+
+
+```javascript
+//注册事件
+
+//worker
+self.registration.sync.register("send-messages");
+//浏览器
+navigator.serviceWorker.ready.then(function(registration) {
+    registration.sync.register("send-messages");
+});
+```
+
+sync事件触发时机：
+* sync事件注册后立即发送
+* 当用户状态从离线变成在线时
+* 每隔几分钟，如果有尚未完成的注册时
+
+```javascript
+//注册事件,类似于trigger,
+//但它会多次尝试，到了event.waitUntil()成功时
+//尝试时机如上
+registration.sync.register("send-messages");
+
+//类似于on
+self.addEventListener("sync", event => {
+    if(event.tag === "send-messages") {
+        event.waitUntil();
+    }
+});
+
+//获取已注册sync事件列表
+registration.sync.getTags()
+self.registration.sync.getTags()
+
+//最后机会，如果多次不行，注册会被取消
+//判断是否最后机会
+e.lastChance
+```

@@ -415,6 +415,7 @@ navigator.servieWorker.register("sw.js")
     .then(registration => navigator.serviceWorker.ready)    //ready是一个promise, 这里相当于await ready
     .then(registration => {
         btn.onClick(() => {
+            //相当于trigger
             registration.sync.register("contact-email").then(() => {    //注册同步
                 //保存数据
             })
@@ -422,6 +423,7 @@ navigator.servieWorker.register("sw.js")
     })
 
 // sw.js
+//类似于on
 self.addEventListenr("sync", event => {
     if(event.tag === "contact-email"){
         event.waitUntil(
