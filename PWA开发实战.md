@@ -123,3 +123,47 @@ self.registration.sync.getTags()
 //判断是否最后机会
 e.lastChance
 ```
+
+
+## 第8章 使用postMessage()在service worker和页面之间通信
+* 窗口向service worker通信
+```javascript
+navigator.serviceWorker.controller.postMessage(data)
+
+self.addEventListener("message", function (event) {
+    console.log("data", event.data);
+    console.log("window id", event.source.id);
+    console.log("window url", event.source.url);
+    console.log("and is", event.source.focused ? "focused" : "not focused");
+    console.log("and", event.source.visibilityState);
+});
+```
+* service worker向所有打开的窗口通信
+```javascript
+navigator.serviceWorker.addEventListener("message", function (event) {
+    console.log(event.data);
+});
+
+self.clients.matchAll().then(function(clients) {
+    clients.forEach(function(client) {
+        client.postMessage("Hi client: " + client.id);
+    });
+});
+```
+* service worker向特定窗口通信
+```javascript
+self.clients.get(event.source.id).then(function(client) {
+    client.postMessage(data);
+});
+```
+* 使用MessageChannel保持通信渠道打开
+```javascript
+//可以在窗口中创建一个新的 MessageChannel 对象，并通过postMessage 将其中的一个端口传递给service worker
+var msgChan = new MessageChannel();
+msgChan.port1.onmessage = function(msg) {
+    console.log("Message received at port 1:", msg.data);
+};
+msgChan.port2.postMessage("Hi from port 2");
+```
+* 窗口间的通信<br>
+组合上面的做法
