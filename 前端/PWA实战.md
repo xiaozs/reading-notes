@@ -168,6 +168,20 @@ self.addEventListener("activate", (event) => {
         "src": "应用图标",
         "sizes": "192x192",     //图标大小
         "type": "image/png"
+    }],
+    "description": "应用的描述",
+    "orientation": "屏幕方向",   //landscape portrait auto 3种
+    "scope": "本文件只对命中的url生效",
+    "dir": "文本方向",            //ltr rtl auto
+    "lang": "语言",
+    "prefer_related_applications": true,   //配合related_applications使用，推荐原生app
+    "related_applications": [{
+        "platform": "play",
+        "url": "https://play.google.com/store/apps/details?id=com.goth.app",
+        "id": "com.goth.app"
+    }, {
+        "platform": "itunes",
+        "url": "https://itunes.apple.com/app/gotham-imperial/id1234"
     }]
 }
 ```
@@ -415,6 +429,7 @@ navigator.servieWorker.register("sw.js")
     .then(registration => navigator.serviceWorker.ready)    //ready是一个promise, 这里相当于await ready
     .then(registration => {
         btn.onClick(() => {
+            //相当于trigger
             registration.sync.register("contact-email").then(() => {    //注册同步
                 //保存数据
             })
@@ -422,6 +437,7 @@ navigator.servieWorker.register("sw.js")
     })
 
 // sw.js
+//类似于on
 self.addEventListenr("sync", event => {
     if(event.tag === "contact-email"){
         event.waitUntil(
