@@ -111,7 +111,7 @@ rust.fib(1)
     2. ```node -e "process._debugProcess(pid)"```
     3. chrome://inspect/#devices
 * vscode调试器配置
-* Hot Reload的实现原理
-```javascript
-//todo
-```
+* Hot Reload的实现原理（这个东西具体还是挺复杂的，建议复习）
+1. 使用Proxy将模块导出对象包装好
+2. 在获取对象的属性时，获取最新的require.cache对象上的属性
+3. 监听代码文件，如果有修改，则更新require.cache
