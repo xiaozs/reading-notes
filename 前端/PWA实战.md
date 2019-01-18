@@ -320,7 +320,7 @@ webpush.sedNotification(pushSubscription,
 self.addEventListener("push", event => {
     var payload = event.data ? JSON.parse(event.data.text()) : "no payload";
     event.waitUntil(
-        self.refistration.showNotification(title, { //弹出通知
+        self.registration.showNotification(title, { //弹出通知
             body: payload.msg,
             url: payload.url,
             icon: payload.icon,
