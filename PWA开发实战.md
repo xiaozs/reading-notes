@@ -236,3 +236,38 @@ Notification.requestPermission().then(function(permission){
     }
 });
 ```
+
+
+## 第11章 渐进式Web应用的用户体验
+大部分是一些提高用户体验相关的设计方式。<br>
+还有一个利用beforeinstallprompt事件来延迟安装框弹出的技巧<br>
+另外一本书里面有提到。
+
+## 第12章 渐进式Web应用的未来
+* 支付请求API：《PWA实战》第12章
+* Credential Management API进行用户管理：没有示例
+* 语音识别：
+```javascript
+var recognition = new SpeechRecognition();
+recognition.onresult = function(event) {
+    console.log("User said: ", event.results[event.resultIndex][0]);
+};
+recognition.start();
+```
+* webVR：没有示例
+* Web分享API：《PWA实战》第12章
+* 媒体播放UI：
+```javascript
+navigator.mediaSession.metadata = new MediaMetadata({
+    title: "New Year's Mix",
+    artist: "Gotham Imperial Hotel",
+    album: "Gotham 2017",
+    artwork: [{ src: "newyearmix.jpg" }]
+});
+navigator.mediaSession.setActionHandler("play", function() {});
+navigator.mediaSession.setActionHandler("pause", function() {});
+navigator.mediaSession.setActionHandler("seekbackward", function() {});
+navigator.mediaSession.setActionHandler("seekforward", function() {});
+navigator.mediaSession.setActionHandler("previoustrack", function() {});
+navigator.mediaSession.setActionHandler("nexttrack", function() {});
+```
