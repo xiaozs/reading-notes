@@ -184,3 +184,90 @@ if (
     显示Web应用安装横条
 }
 ```
+
+
+## 第10章 推送通知
+过程（《PWA实战》第6章的代码示例更好）：<br>
+(1) 页面向用户请求显示通知的权限，用户授权；<br>
+(2) 页面和中央消息服务器通信，要求服务器为这个用户创建一个新的订阅；<br>
+(3) 消息服务器返回新的订阅详情对象作为响应；<br>
+(4) 页面将订阅详情发送给服务器；<br>
+(5) 服务器将订阅详情储存起来，以供将来使用；<br>
+(6) 时间流逝，季节变化，需要发送新的通知；<br>
+(7) 服务器使用订阅详情，通过消息服务器将消息发送给用户；<br>
+(8) 消息服务器将消息转发给用户的浏览器；<br>
+(9) service worker 的push 事件监听器收到消息；<br>
+(10) service worker 显示通知，其中包含了消息内容。
+
+* 使用Push API 发送消息
+* 使用Notification API显示通知
+```javascript
+//请求显示通知的权限
+Notification.requestPermission().then(function(permission){
+    //如果权限被授予
+    if (permission === "granted") {
+        //创建一个标题为Shiny 的通知
+
+        //pc端
+        new Notification("Shiny");
+
+        //移动端
+        navigator.serviceWorker.ready.then(function(registration) {
+            registration.showNotification("Shiny", {
+                body: "正文",
+                icon: "图片url",
+                badge: "icon的角标url",
+                actions: [{
+                    action: "操作",
+                    title: "操作标题",
+                    icon?: "该操作icon的url"
+                }],
+                vibrate: [300, 100, 400],    //自定义震动模式 震动300ms，暂停100ms，震动400ms
+                tag: "通知的id，同id者会覆盖旧内容",
+                renotify: true,  // 即使是覆盖，也会提示
+                data: {},        //额外数据
+                dir: "文字方向",
+                lang: "语言",
+                noscreen: false,  //一个布尔值，用来指定设备的屏幕是否会被这个通知打开(暂无浏览器支持)
+                silent: false,    //(暂无浏览器支持)
+                sound: "提示声音url"//(暂无浏览器支持)
+            });
+        });
+    }
+});
+```
+
+
+## 第11章 渐进式Web应用的用户体验
+大部分是一些提高用户体验相关的设计方式。<br>
+还有一个利用beforeinstallprompt事件来延迟安装框弹出的技巧<br>
+另外一本书里面有提到。
+
+## 第12章 渐进式Web应用的未来
+* 支付请求API：《PWA实战》第12章
+* Credential Management API进行用户管理：没有示例
+* 语音识别：
+```javascript
+var recognition = new SpeechRecognition();
+recognition.onresult = function(event) {
+    console.log("User said: ", event.results[event.resultIndex][0]);
+};
+recognition.start();
+```
+* webVR：没有示例
+* Web分享API：《PWA实战》第12章
+* 媒体播放UI：
+```javascript
+navigator.mediaSession.metadata = new MediaMetadata({
+    title: "New Year's Mix",
+    artist: "Gotham Imperial Hotel",
+    album: "Gotham 2017",
+    artwork: [{ src: "newyearmix.jpg" }]
+});
+navigator.mediaSession.setActionHandler("play", function() {});
+navigator.mediaSession.setActionHandler("pause", function() {});
+navigator.mediaSession.setActionHandler("seekbackward", function() {});
+navigator.mediaSession.setActionHandler("seekforward", function() {});
+navigator.mediaSession.setActionHandler("previoustrack", function() {});
+navigator.mediaSession.setActionHandler("nexttrack", function() {});
+```
