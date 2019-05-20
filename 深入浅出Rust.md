@@ -22,5 +22,25 @@ replace-with = 'ustc'
 [source.ustc]
 registry = "git://mirrors.ustc.edu.cn/crates.io-index"
 ```
-
+* 安装vsms
+```npm i -g windows-build-tools```
 ## 第2章 变量和类型
+* const fn: 的运算发生在编译时。
+* 还有一堆关于 溢出、NaN、Infinity 的讨论
+
+
+## 第3章 语句和表达式
+* if-else 可以返回值，所以没有三目运算符
+* loop 可用通过break返回值
+
+## 第4章 函数
+* !类型： 异常或死循环函数的返回类型
+* std::env::args() //获取命令行参数的方法，和node有点像
+
+## 第5章 trait
+trait 是一个类似于interface的东西，有一些不同之处：
+* 可以有可override的默认实现
+* 可以通过调用方法来区分来自不同trait的相同名称的接口
+* 可以规定静态方法
+* 某些情况下可以像C#扩展方法那样用
+* 等
