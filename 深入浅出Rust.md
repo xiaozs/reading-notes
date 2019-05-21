@@ -23,7 +23,10 @@ replace-with = 'ustc'
 registry = "git://mirrors.ustc.edu.cn/crates.io-index"
 ```
 * 安装vsms
-```npm i -g windows-build-tools```
+```
+npm i -g windows-build-tools
+```
+
 ## 第2章 变量和类型
 * const fn: 的运算发生在编译时。
 * 还有一堆关于 溢出、NaN、Infinity 的讨论
@@ -44,3 +47,24 @@ trait 是一个类似于interface的东西，有一些不同之处：
 * 可以规定静态方法
 * 某些情况下可以像C#扩展方法那样用
 * 等
+
+## 第6章 数组和字符串
+没有什么特别的，介绍了一下 边界检查、切片 的内容
+
+## 第7章 模式解构
+* match 语句要覆盖所有分支，如果上游进行了修改，可能会破坏下游
+* match 也是表达式
+
+## 第8章 深入类型系统
+通过介绍代数类型系统来引出Never Type，说明Never Type的作用:
+* 可以使得泛型代码兼容diverging function
+* 更好的死代码检查
+* 可以用更好的方式表达“不可能出现的情况”
+
+## 第9章 宏
+宏的使用比较复杂，而且api还没有固定。
+
+* 实现编译阶段检查
+* 实现编译期计算
+* 实现自动代码生成
+* 实现语法扩展
