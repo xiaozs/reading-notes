@@ -32,6 +32,8 @@ Manifest文件格式：
         // 用户单击扩展图标时所显示页面
         "default_popup": "popup.html"
     },
+
+    //类似于browser_action
     "page_action": {
         "default_icon": {
             "19": "images/icon19.png",
@@ -82,11 +84,20 @@ Manifest文件格式：
         // 跨域的权限
         "*://www.google.com/*",
         // Chrome存储API的权限
-        "storage"
+        "storage",
+        // 访问 右键菜单
+        "contextMenus",
+        // 桌面提醒
+        "notifications"
     ],
+
+    // 桌面提醒等 中显示的图片
     "web_accessible_resources": [
         "images/*.png"
-    ]
+    ],
+
+    // 启动omnibox的keyword
+    "omnibox": { "keyword" : "keyword" }
 }
 ```
 ## 第2章 Chrome扩展基础
@@ -94,7 +105,26 @@ api文档：http://developer.chrome.com/extensions/extension
 
 ```javascript
 // 动态改变扩展图标
-chrome.browserAction.setIcon({ path: "" });
+chrome.browserAction.setIcon({
+    // 可以是下2个属性其一
+    path: "",
+    // imageData, 格式跟Manifest一样
+    {
+        19: "",
+        39: ""
+    },
+
+    //限定了浏览哪个标签页时，图标将被更改
+    tabId
+}, callback);
+
+// 动态改变扩展标题
+chrome.browserAction.setTitle({title: 'This is a new title'});
+
+// 设置Badge
+chrome.browserAction.setBadgeBackgroundColor({color: '#0000FF'});
+chrome.browserAction.setBadgeBackgroundColor({color: [0, 255, 0, 128]});
+chrome.browserAction.setBadgeText({text: 'Dog'});
 ```
 ```javascript
 // 扩展页面间的通信
@@ -158,3 +188,137 @@ chrome.storage.onChanged.addListener(function (
 ) { })
 ```
 
+## 第3章 Chrome扩展的UI界面
+```javascript
+// 右键菜单
+// 通常create方法由后台页面来调用，即通过后台页面创建自定义菜单。
+// 如果后台页面是Event Page，通常在onInstalled事件中调用create方法。
+
+// 普通菜单
+chrome.contextMenus.create({
+    type: 'normal',
+    title: 'Menu A',
+    id: 'a'
+});
+
+// 单选菜单
+chrome.contextMenus.create({
+    type: 'radio',
+    title: 'Menu B',
+    id: 'b',
+    checked: true
+});
+
+chrome.contextMenus.create({
+    type: 'radio',
+    title: 'Menu C',
+    id: 'c'
+});
+
+// 复选菜单
+chrome.contextMenus.create({
+    type: 'checkbox',
+    title: 'Menu D',
+    id: 'd',
+    checked: true
+});
+
+// 分割线
+chrome.contextMenus.create({
+    type: 'separator'
+});
+
+
+// 子菜单
+chrome.contextMenus.create({
+    type: 'normal',
+    title: 'Menu F',
+    id: 'f',
+    parentId: 'a'
+});
+
+
+chrome.contextMenus.create({
+    type: 'normal',
+    title: 'My Menu',
+
+    // 右键菜单在何时显示
+    contexts: [
+        // 不包含launcher
+        "all",
+
+        // 默认，所有的页面唤出右键菜单时都显示自定义菜单
+        "page",
+        "frame",
+        "selection",
+        "link",
+        "editable",
+        "image",
+        "video",
+        "audio",
+
+        // 只对Chrome应用有效
+        "launcher"
+    ],
+    // 允许限定页面的URL
+    documentUrlPatterns: [],
+    // 类似于documentUrlPatterns，诸如图片、视频和音频等资源的URL
+    targetUrlPatterns: [], 
+
+    // 点击回调
+    onclick: callback
+});
+
+
+chrome.contextMenus.update
+chrome.contextMenus.remove
+chrome.contextMenus.removeAll
+```
+
+```javascript
+// 桌面提醒
+var notification = webkitNotifications.createNotification(
+    'icon48.png',
+    'Notification Demo',
+    'Merry Christmas'
+);
+notification.show();
+notification.cancel();
+
+notification.addEventListener("ondisplay" | "onerror" | "onclose" | "onclick", callback);
+
+// 也可以通过Chrome提供的chrome.notifications方法来创建功能更加丰富的提醒框。
+```
+
+```javascript
+// Omnibox，多功能框，地址框
+
+// 定义默认建议
+chrome.omnibox.setDefaultSuggestion([{
+    'content': "",
+    'description': ""
+},{
+    'content': "",
+    'description': ""
+}])
+
+chrome.omnibox.onInputChanged.addListener(function(text, suggest){
+    suggest([{
+        content: text,
+        description: 'Search '+text+' in Wikipedia'
+    }]);
+});
+
+chrome.omnibox.onInputStarted
+chrome.omnibox.onInputChanged
+chrome.omnibox.onInputEntered
+chrome.omnibox.onInputCancelled
+```
+
+```javascript
+// Page Actions
+// Page Actions并不像Browser Actions那样一直显示图标，而是可以在特定标签特定情况下显示或隐藏，
+// 所以它还具有独有的show和hide方法。
+chrome.pageAction.show(integer tabId);
+chrome.pageAction.hide(integer tabId);
+```
