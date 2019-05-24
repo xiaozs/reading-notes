@@ -13,7 +13,7 @@
 ```
 export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
 export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
-````
+```
 * $HOME/.cargo目录下创建一个名为config的文本文件:
 ```
 [source.crates-io]
@@ -135,3 +135,19 @@ Rust有些特殊类型Cell、RefCell可以做到同时用多个读指针，同�
 这个标记意味着这个类型是个特殊类型，是被编译器特别照顾的类型。
 
 ## 第16章 解引用
+rust中的解引用操作可以被重写，用于智能指针之类的东西。<br>
+有一些地方可以自动进行解引用（也就是说不论是不是指针，可以直接```.method()```调用方法）
+
+
+## 第17章 泄漏
+* 内存泄漏：<br>
+rust由于上面的哪些漏洞，禁绝不了智能指针循环引用，所以禁绝不了内存泄漏，但想要形成内存泄漏也很难。
+
+* 析构函数泄漏：<br>
+在Rust中，RAII手法用得非常普遍，<br>
+它实际上要求程序的正确性依赖于析构函数的确定性调用。<br>
+然而让我们担心的事情是，析构函数是有可能永远不会被调用的。<br>
+<br>
+析构函数泄漏禁绝不了
+
+## 第19章 Panic
