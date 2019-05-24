@@ -88,7 +88,9 @@ Manifest文件格式：
         // 访问 右键菜单
         "contextMenus",
         // 桌面提醒
-        "notifications"
+        "notifications",
+        // 操作菜单栏
+        "bookmarks",
     ],
 
     // 桌面提醒等 中显示的图片
@@ -322,3 +324,5 @@ chrome.omnibox.onInputCancelled
 chrome.pageAction.show(integer tabId);
 chrome.pageAction.hide(integer tabId);
 ```
+
+## 第4章 管理你的浏览器
