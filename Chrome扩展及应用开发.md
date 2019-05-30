@@ -91,6 +91,14 @@ Manifest文件格式：
         "notifications",
         // 操作菜单栏
         "bookmarks",
+        // 操作cookies
+        "cookies",
+        // 历史纪录
+        "history",
+        // 管理扩展与应用
+        "management",
+        // 标签
+        "tabs"
     ],
 
     // 桌面提醒等 中显示的图片
@@ -326,3 +334,457 @@ chrome.pageAction.hide(integer tabId);
 ```
 
 ## 第4章 管理你的浏览器
+```javascript
+// 创建书签
+// id, 不需要人为干预
+// parentId
+// index
+// url
+// title
+// dateAdded, 新增时间戳
+// dateGroupModified, 修改时间戳
+// children
+chrome.bookmarks.create({
+    parentId: '1',
+    index: 0,
+    title: 'Google',
+    url: 'http://www.google.com/'
+}, function(bookmark){
+    console.log(bookmark);
+});
+
+// 调整书签的位置
+chrome.bookmarks.move('16', {
+    parentId:'7',
+    index:4
+}, function(bookmark){
+    console.log(bookmark);
+});
+
+// 修改书签
+chrome.bookmarks.update('16', {
+    title: 'Gmail',
+    url: 'https://mail.google.com/'
+}, function(bookmark){
+    console.log(bookmark);
+});
+
+// 移除书签
+chrome.bookmarks.remove('16', function(){
+    console.log('Bookmark 16 has been removed.');
+});
+
+chrome.bookmarks.removeTree('6', function(){
+    console.log('Bookmark group 6 has been removed.');
+});
+
+// 获得用户完整的书签树
+chrome.bookmarks.getTree(function(bookmarkArray){
+    console.log(bookmarkArray);
+});
+
+// 获得以指定节点为父节点的下一级书签节点，但不包括再下一级的节点
+chrome.bookmarks.getChildren('0', function(bookmarkArray){
+    console.log(bookmarkArray);
+});
+
+// 获得自指定节点开始包括当前节点及向下的所有节点
+chrome.bookmarks.getSubTree('0', function(bookmarkArray){
+    console.log(bookmarkArray);
+});
+
+// 返回指定节点不包含children属性的书签对象数组
+chrome.bookmarks.get(['16', '17'], function(bookmarkArray){
+    console.log(bookmarkArray);
+});
+
+// 获取最近添加的多个书签
+chrome.bookmarks.getRecent(5, function(bookmarkArray){
+    console.log(bookmarkArray);
+});
+
+// 返回所有标题或URL中包含
+chrome.bookmarks.search('google', function(bookmarkArray){
+    console.log(bookmarkArray);
+});
+
+// 监控书签的创建行为
+chrome.bookmarks.onCreated.addListener(function(bookmark){
+    console.log(bookmark);
+});
+
+// 监控书签的移除行为
+chrome.bookmarks.onRemoved.addListener(function(id, removeInfo){
+    console.log('Bookmark '+id+' has been removed:');
+    console.log(removeInfo);
+});
+
+// 监控书签的更新行为
+chrome.bookmarks.onChanged.addListener(function(id, changeInfo){
+    console.log('Bookmark '+id+' has been changed:');
+    console.log(changeInfo);
+});
+
+// 监控书签的移动行为
+chrome.bookmarks.onMoved.addListener(function(id, moveInfo){
+    console.log('Bookmark '+id+' has been moved:');
+    console.log(moveInfo);
+});
+
+// 以监控一个书签分组下的更改子节点顺序的行为
+chrome.bookmarks.onChildrenReordered.addListener(function(id, reorderInfo){
+    console.log('Bookmark '+id+' has a new children order:');
+    console.log(reorderInfo);
+});
+
+// 监控导入书签开始和结束的行为
+chrome.bookmarks.onImportBegan(function(){
+    console.log('Bookmark import began.');
+});
+
+chrome.bookmarks.onImportEnded(function(){
+    console.log('Bookmark import ended.');
+});
+```
+
+
+```javascript
+// cookies
+chrome.cookies.get({
+    url: 'https://github.com',
+    name: 'dotcom_user'
+}, function(cookie){
+    console.log(cookie.value);
+});
+
+// 匹配条件包括url、name、domain、path、secure、session和storeId中的任意一个或多个
+chrome.cookies.getAll({}, function(cookies){
+    console.log(cookies);
+});
+
+
+chrome.cookies.set({
+    'url':'http://github.com/test_cookie',
+    'name':'TEST',
+    'value':'foo',
+    'secure':false,
+    'httpOnly':false
+}, function(cookie){
+    console.log(cookie);
+});
+
+chrome.cookies.remove({
+    url: 'http://www.google.com',
+    name: '_ga'
+}, function(result){
+    console.log(result);
+});
+
+// 监控cookie的设置和删除行为
+chrome.cookies.onChanged.addListener(function(changeInfo){
+    console.log(changeInfo);
+});
+```
+
+
+```javascript
+// 历史
+
+// 最近24小时内匹配“Google”的20条历史结果。
+chrome.history.search({
+    text: 'Google',
+    startTime: new Date().getTime()-24*3600*1000,
+    endTime: new Date().getTime(),
+    maxResults: 20
+}, function(historyItemArray){
+    console.log(historyItemArray);
+});
+
+// 绝对匹配指定的URL
+chrome.history.getVisits(
+    url: 'http://www.google.com/'
+}, function(visitItemArray){
+    console.log(visitItemArray);
+});
+
+// 添加历史
+chrome.history.addUrl({
+    url: 'http://twitter.com'
+}, function(){
+    console.log('Twitter has been added to history.');
+});
+
+// 删除指定URL的历史
+chrome.history.deleteUrl({
+    url: 'http://www.google.com'
+}, function(){
+    console.log('Google has been deleted from history.');
+});
+
+// 删除指定时间段的历史
+chrome.history.deleteRange({
+    startTime: new Date().getTime()-24*3600*1000,
+    endTime: new Date().getTime()
+}, function(){
+    console.log('History in past 24 hours has been deleted.');
+});
+
+// 删除全部历史
+chrome.history.deleteAll(function(){
+    console.log('All history has been deleted.');
+});
+
+// 访问历史
+chrome.history.onVisited.addListener(function(historyItem){
+    console.log(historyItem);
+});
+
+// 历史被删除
+chrome.history.onVisitRemoved.addListener(function(removedObject){
+    console.log(removedObject);
+});
+```
+
+
+```javascript
+// 管理扩展与应用
+
+// 读取用户已安装扩展和应用
+chrome.management.getAll(function(exInfoArray){
+    console.log(exInfoArray);
+});
+
+chrome.management.get(exId, function(exInfo){
+    console.log(exInfo);
+});
+
+// exInfo
+{
+    id: 扩展id,
+    name: 扩展名称,
+    shortName: 扩展短名称,
+    description: 扩展描述,
+    version: 扩展版本,
+    mayDisable: 是否可被用户卸载或禁用,
+    enabled: 是否已启用,
+    disabledReason: 扩展被禁用原因,
+    type: 类型,
+    appLaunchUrl: 启动url,
+    homepageUrl: 主页url,
+    updateUrl: 更新url,
+    offlineEnabled: 离线是否可用,
+    optionsUrl: 选项页面url,
+    icons: [{
+        size: 图片尺寸,
+        url: 图片URL
+    }],
+    permissions: 扩展权限,
+    hostPermissions: 扩展有权限访问的host,
+    installType: 扩展被安装的方式
+}
+
+// 获取权限警告
+chrome.management.getPermissionWarningsById(exId, function(permissionWarningArray){
+    console.log(permissionWarningArray);
+});
+
+// exManifest是字符串型的
+chrome.management.getPermissionWarningsByManifest(exManifest, function(permissionWarningArray){
+    console.log(permissionWarningArray);
+});
+
+// 启用或禁用扩展应用
+chrome.management.setEnabled(exId, enabled, function(){
+    if(enabled){
+        console.log('Extension '+exId+' has been enabled.');
+    }
+    else{
+        console.log('Extension '+exId+' has been disabled.');
+    }
+});
+
+// 卸载扩展
+chrome.management.uninstall(exId, {
+    // 显示确认窗口
+    showConfirmDialog: true
+}, function(){
+    console.log('Extension '+exId+' has been uninstalled.');
+});
+
+chrome.management.uninstallSelf({
+    showConfirmDialog: true
+}, function(){
+    console.log('This extension has been uninstalled.');
+});
+
+// 启动应用
+chrome.management.launchApp(exId, function(){
+    console.log('App '+exId+' has been launched.');
+});
+
+
+// 监听安装、卸载、启用和禁用扩展应用
+chrome.management.onInstalled.addListener(function(exInfo){
+    console.log('Extension '+exInfo.id+' has been installed.')
+});
+
+chrome.management.onUninstalled.addListener(function(exId){
+    console.log('Extension '+exId+' has been uninstalled.');
+});
+
+chrome.management.onEnabled.addListener(function(exInfo){
+    console.log('Extension '+exInfo.id+' has been enabled.');
+});
+
+chrome.management.onDisabled.addListener(function(exInfo){
+    console.log('Extension '+exInfo.id+' has been disabled.');
+});
+```
+
+
+```javascript
+// 标签
+
+// 获取到指定id的标签
+chrome.tabs.get(tabId, function(tab){
+    console.log(tab);
+});
+
+// 获取运行的脚本本身所在的标签
+chrome.tabs.getCurrent(function(tab){
+    console.log(tab);
+});
+
+// 获取所有符合指定条件的标签
+chrome.tabs.query({
+    active: true
+}, function(tabArray){
+    console.log(tabArray);
+});
+
+// query方法可以指定的匹配条件
+{
+    active: 是否是活动的,
+    pinned: 是否被固定,
+    highlighted: 是否正被高亮显示,
+    currentWindow: 是否在当前窗口,
+    lastFocusedWindow: 是否是上一次选中的窗口,
+    status: 状态，loading或complete,
+    title: 标题,
+    url: 所打开的url,
+    windowId: 所在窗口的id,
+    windowType: 窗口类型，normal、popup、panel或app,
+    index: 窗口中的位置
+}
+
+// 创建标签
+chrome.tabs.create({
+    windowId: wId,
+    index: 0,
+    url: 'http://www.google.com',
+    active: true,
+    pinned: false,
+    openerTabId: tId
+}, function(tab){
+    console.log(tab);
+});
+
+// 复制 指定标签
+chrome.tabs.duplicate(tabId, function(tab){
+    console.log(tab);
+});
+
+// 更新标签
+chrome.tabs.update(tabId, {
+    url: 'http://www.google.com'
+}, function(tab){
+   console.log(tab);
+});
+
+// 移动标签
+chrome.tabs.move(tabIds, {
+    'windowId':wId,
+    'index':0
+}, function(tabs){
+    console.log(tabs);
+});
+
+// 重载标签
+chrome.tabs.reload(tabId, {
+    // 是否跳过缓存（强制刷新）
+    bypassCache: true
+}, function(){
+    console.log('The tab has been reloaded.');
+});
+
+// 移除标签
+chrome.tabs.remove(tabIds, function(){
+    console.log('The tabs has been closed.');
+});
+
+// 获取当前标签页面的显示语言
+chrome.tabs.detectLanguage(tabId, function(lang){
+    console.log('The primary language of the tab is '+lang);
+});
+
+// 截图(可见部分)
+// 只有声明activeTab或<all_url>权限能获取到活动标签的截图
+chrome.tabs.captureVisibleTab(windowId, {
+    format: 'jpeg',
+    quality: 50
+}, function(dataUrl){
+    window.open(dataUrl, 'tabCapture');
+});
+
+// 注入脚本
+chrome.tabs.executeScript(tabId, {
+    file: 'js/ex.js',
+    allFrames: true,
+
+    // 'document_start'、'document_end'或'document_idle'
+    runAt: 'document_start'
+}, function(resultArray){
+    console.log(resultArray);
+});
+
+// 注入CSS
+chrome.tabs.insertCSS(tabId, {
+    file: 'css/insert.css',
+    allFrames: false,
+    runAt: 'document_start'
+}, function(){
+    console.log('The css has been inserted.');
+});
+
+// 与指定标签中的内容脚本（content script）通信
+chrome.tabs.sendMessage(tabId, message, function(response){
+    console.log(response);
+});
+
+onCreated
+onUpdated
+onMoved
+onActivated
+onHighlighted   // 当标签被高亮显示时
+onDetached      // 标签脱离窗口时
+onAttached      // 标签附着到窗口上时
+onRemoved
+onReplaced
+```
+
+```javascript
+// Override Pages, 替换Chrome相应默认的页面
+// 只需在Manifest中进行声明即可（一个扩展只能替换一个页面）
+
+"chrome_url_overrides" : {
+    "bookmarks": "bookmarks.html"
+}
+
+"chrome_url_overrides" : {
+    "history": "history.html"
+}
+
+"chrome_url_overrides" : {
+    "newtab": "newtab.html"
+}
+```
