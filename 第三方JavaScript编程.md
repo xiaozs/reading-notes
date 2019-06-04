@@ -92,3 +92,43 @@
     * 总是异步的
 * 子域名代理
 * 跨源资源共享（CORS）
+
+## 第5章 跨域iframe通信
+* HTML5 window.postMessage API
+    * IE8和IE9只允许向iframe元素发送消息
+    * IE8和IE9也不支持上面提到的结构化克隆算法
+* 降级技术
+    * 使用window.name发送消息
+    ```javascript
+    // window.name有一个很有用的特点：
+    // 一旦被赋值后，当窗口被重定向到一个新的URL时不会改变它的值
+    // 这一行为使得不同域的特定文档可以读取该属性值，因此可以绕过同源策略并使跨域消息通信成为可能
+
+    // 在发布者的页面创建一个iframe并将其URL指到你域名下的一个目标页面。
+    // 当页面加载完成后，iframe会通过给window.name属性赋值，将消息字符串发送给父窗口。
+    // 但是父页面并不能原样读取该值，因为iframe页面隶属一个不同的域（SOP）。
+    // 为了解决这个问题，iframe需要将自身跳转到发布者域名的页面。
+    // 当iframe重定向后，因为iframe当前打开的是同一个域下的文档，父页面就可以获取window.name的值。
+    // 由于window.name属性在跳转后并不会发生改变，它依旧包含最初由外部页面设置的消息
+    var iframe = docuemnt.createElement("iframe");
+    var body = docuemnt.getElementsByTagName("body")[0];
+
+    iframe.style.display = "none";
+    iframe.src = ""
+    
+    var done = false;
+    iframe.onreadystatechange = function(){
+        if(iframe.readyState !== "complete" || done){
+            return;
+        }
+        
+        var name = iframe.contentWindow.name;
+        if(name) {
+            console.log(iframe.contentWindow.name);
+            done = true;
+        }
+    }
+
+    body.appendChild(iframe);
+    ```
+* 
