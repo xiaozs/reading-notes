@@ -98,7 +98,10 @@ Manifest文件格式：
         // 管理扩展与应用
         "management",
         // 标签
-        "tabs"
+        "tabs",
+
+        // 下载
+        "downloads",
     ],
 
     // 桌面提醒等 中显示的图片
@@ -787,4 +790,31 @@ onReplaced
 "chrome_url_overrides" : {
     "newtab": "newtab.html"
 }
+```
+
+## 第5章 部分高级API
+
+```javascript
+// 下载
+chrome.downloads.download(options, callback);
+// options
+{
+    url: 下载文件的url,
+    filename: 保存的文件名,
+
+    // "uniquify", "overwrite", "prompt"
+    conflictAction: 重名文件的处理方式,
+    saveAs: 是否弹出另存为窗口,
+    method: 请求方式（POST或GET），
+    headers: 自定义header数组,
+    body: POST的数据
+}
+```
+
+```javascript
+// 网络请求
+// 可以对浏览器向Google发起的网络请求进行更改
+// webRequest接口无法在Event Page中使用
+
+// todo
 ```
