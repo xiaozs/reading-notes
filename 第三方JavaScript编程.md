@@ -155,3 +155,37 @@
     ```
     * 使用Flash发送消息
 * 介绍了库easyXDM的使用
+
+## 第6章 验证和会话
+* 哪些情况下cookie会被认为是第三方的
+    |源|Cookie域|是否被认为第三方|
+    |---|---|---|
+    |publisher.com|publisher.com|否|
+    |publisher.com|camerastork.com|是|
+    |camerastork.com（通过publisher.com页面的iframe加载）|camerastork.com|是|
+* 禁用第三方cookie时不同浏览器的表现<br>
+    （可能会禁止cookie的发送，也可能禁止发送和写入）<br>
+    （localStorage可能会被同时禁用）<br>
+    （在Internet Explorer中使用第三方cookie，必需设置P3P头）<br>
+* 检测cookie是否可用
+    ```javascript
+    function testCanWriteCookies() {
+        document.cookie = "test=1";
+        var allCookies = document.cookie.replace(" ", "");
+        allCookies = allCookies.split(";");
+        for( var i = 0; i < allCookies.length; i++ ){
+            if(allCookies[i].indexOf("test=1") !== -1){
+                // 这里应该还要做清除
+                return true;
+            }
+        }
+        return false;
+    }
+    ```
+* 设置第三方cookie
+    * 使用独立窗口设置（适用于只禁止cookie的发送的浏览器）
+    * iframe的解决方案（使用标准的POST表单，通过set-cookie实现）（只针对Safari）
+    * 将会话ID用变量保存，之后的每个请求都带上这个ID（适用于只禁止cookie发送和写入的浏览器）
+* 会话安全
+    * HTTPS和更安全的cookie(cookie的secure参数，使其只在https中传输)
+    * 多重身份认证（对于无法全局使用https时，部分重要操作使用https）
