@@ -131,4 +131,27 @@
 
     body.appendChild(iframe);
     ```
-* 
+    * 使用URL片段标识符发送消息
+    ```html
+    <iframe src="http://child.com/?url=parent.com"></iframe>
+    <script>
+        // 父页面代码
+        setInterval(function () {
+            if (location.hash) {
+                doSomeThing(location.hash);
+                location.hash = "";
+            }
+        }, 100)
+    </script>
+    ```
+    ```html
+    <script>
+        function sendToParent(msg) {
+            var url = getParams("url");
+            window.parent.location = url + "#" + msg;
+        }
+        sendToParent("hello");
+    </script>
+    ```
+    * 使用Flash发送消息
+* 介绍了库easyXDM的使用
