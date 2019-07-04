@@ -189,3 +189,22 @@
 * 会话安全
     * HTTPS和更安全的cookie(cookie的secure参数，使其只在https中传输)
     * 多重身份认证（对于无法全局使用https时，部分重要操作使用https）
+
+## 第7章 安全性
+* 跨站脚本（XSS）
+    * 跨站脚本：通过代码注入（用户评论区嵌入```<script>```）访问用户的document.cookies，然后发送到攻击者服务器
+    * CSS中的XSS漏洞：expression功能（只在IE中有）
+    * 防止XSS对应用的攻击：在将任何外部数据插入到DOM（包括发布者和你自己）中之前，应该对其中包含的任意字符进行转义
+* 跨站请求伪造（CSRF或XSRF）
+    * XSRF攻击（只要执行到对应的接口就好，可以通过覆盖ajax接口的实现来取到回复数据）
+    * 保护应用免受XSRF攻击：XSRF令牌
+* 发布者漏洞
+    * 发布者模拟（配置参数并不是针对自己网站）：通过REFERER头对发布者进行验证
+    * 点击劫持（在ui上添加一个覆盖层）：不让通过iframe加载，X-FRAME-OPTIONS和“框架杀手”脚本(但这两个方法都不能用在第三方脚本上)
+        ```javascript
+        // “框架杀手”脚本
+        if(top != self) {
+            document.body.style.display = "none";
+        }
+        ```
+    * 拒绝服务（DoS）
