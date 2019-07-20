@@ -131,4 +131,91 @@
 
     body.appendChild(iframe);
     ```
-* 
+    * 使用URL片段标识符发送消息
+    ```html
+    <iframe src="http://child.com/?url=parent.com"></iframe>
+    <script>
+        // 父页面代码
+        setInterval(function () {
+            if (location.hash) {
+                doSomeThing(location.hash);
+                location.hash = "";
+            }
+        }, 100)
+    </script>
+    ```
+    ```html
+    <script>
+        function sendToParent(msg) {
+            var url = getParams("url");
+            window.parent.location = url + "#" + msg;
+        }
+        sendToParent("hello");
+    </script>
+    ```
+    * 使用Flash发送消息
+* 介绍了库easyXDM的使用
+
+## 第6章 验证和会话
+* 哪些情况下cookie会被认为是第三方的
+    |源|Cookie域|是否被认为第三方|
+    |---|---|---|
+    |publisher.com|publisher.com|否|
+    |publisher.com|camerastork.com|是|
+    |camerastork.com（通过publisher.com页面的iframe加载）|camerastork.com|是|
+* 禁用第三方cookie时不同浏览器的表现<br>
+    （可能会禁止cookie的发送，也可能禁止发送和写入）<br>
+    （localStorage可能会被同时禁用）<br>
+    （在Internet Explorer中使用第三方cookie，必需设置P3P头）<br>
+* 检测cookie是否可用
+    ```javascript
+    function testCanWriteCookies() {
+        document.cookie = "test=1";
+        var allCookies = document.cookie.replace(" ", "");
+        allCookies = allCookies.split(";");
+        for( var i = 0; i < allCookies.length; i++ ){
+            if(allCookies[i].indexOf("test=1") !== -1){
+                // 这里应该还要做清除
+                return true;
+            }
+        }
+        return false;
+    }
+    ```
+* 设置第三方cookie
+    * 使用独立窗口设置（适用于只禁止cookie的发送的浏览器）
+    * iframe的解决方案（使用标准的POST表单，通过set-cookie实现）（只针对Safari）
+    * 将会话ID用变量保存，之后的每个请求都带上这个ID（适用于只禁止cookie发送和写入的浏览器）
+* 会话安全
+    * HTTPS和更安全的cookie(cookie的secure参数，使其只在https中传输)
+    * 多重身份认证（对于无法全局使用https时，部分重要操作使用https）
+
+## 第7章 安全性
+* 跨站脚本（XSS）
+    * 跨站脚本：通过代码注入（用户评论区嵌入```<script>```）访问用户的document.cookies，然后发送到攻击者服务器
+    * CSS中的XSS漏洞：expression功能（只在IE中有）
+    * 防止XSS对应用的攻击：在将任何外部数据插入到DOM（包括发布者和你自己）中之前，应该对其中包含的任意字符进行转义
+* 跨站请求伪造（CSRF或XSRF）
+    * XSRF攻击（只要执行到对应的接口就好，可以通过覆盖ajax接口的实现来取到回复数据）
+    * 保护应用免受XSRF攻击：XSRF令牌
+* 发布者漏洞
+    * 发布者模拟（配置参数并不是针对自己网站）：通过REFERER头对发布者进行验证
+    * 点击劫持（在ui上添加一个覆盖层）：不让通过iframe加载，X-FRAME-OPTIONS和“框架杀手”脚本(但这两个方法都不能用在第三方脚本上)
+        ```javascript
+        // “框架杀手”脚本
+        if(top != self) {
+            document.body.style.display = "none";
+        }
+        ```
+    * 拒绝服务（DoS）
+
+## 第8章 独特的框架
+* 实现一个最基本的SDK
+    * 初始化
+    * 微件渲染
+    * 事件监听
+* 版本管理（URL版本管理、通过初始化进行版本控制）
+* 封装Web服务的APIs
+    * iframe中发起请求
+    * 识别发布者：验证域名、代理文件和REFERER头、自定义HTTP头和X-*前缀
+    * 用户授权和OAuth
