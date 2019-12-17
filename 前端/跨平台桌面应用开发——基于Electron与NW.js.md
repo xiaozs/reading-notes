@@ -26,7 +26,7 @@ app.on("window-all-closed",() => {
 })
 app.on("ready", () => {
     mainWindow = new BrowserWindow();
-    mainWindow.loadURL("file://${app.getAppPatch()/index.html}")
+    mainWindow.loadURL(`file://${app.getAppPatch()}/index.html`)
     mainWindow.on("closed", () => {
         mainWindow = null;
     })
